@@ -94,7 +94,17 @@
 </head>
 <body class="bg-gray-900 text-white min-h-screen flex flex-col items-center justify-center p-4">
     <div class="max-w-4xl w-full">
-        <h1 class="text-3xl md:text-6xl font-bold text-center mb-6 text-red-500">COMMUNIST CHESS</h1>
+        
+        
+<div class="flex items-center justify-center mb-6">
+    <svg id="site-logo" width="48" height="48" viewBox="0 0 48 48" class="mr-4 transition-colors duration-100" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="24" cy="24" r="20" fill="#ef4444"/>
+        <text x="24" y="30" text-anchor="middle" font-size="18" fill="#fff" font-family="Arial" font-weight="bold">C</text>
+    </svg>
+    <h1 class="text-3xl md:text-6xl font-bold text-center text-red-500">COMMUNIST CHESS</h1>
+
+</div>
+
         
         <div class="flex flex-col md:flex-row items-center justify-center gap-6 md:gap-12">
             <div class="chess-board relative bg-gray-800 shadow-2xl rounded-lg overflow-hidden">
@@ -1124,16 +1134,29 @@
             document.getElementById('flappy-modal').classList.add('hidden');
         });
     </script>
+<section class="w-full max-w-2xl mx-auto mt-12 mb-8 bg-gray-800 rounded-lg shadow-lg p-6 text-center">
+    <h2 class="text-2xl font-bold text-cyan-700 mb-2">HELP US IMPROVE</h2>
+    <button id="gmail-link" class="bg-lime-600 hover:bg-lime-700 text-white py-2 px-4 rounded transition mb-2">
+        Open Gmail and copy email
+    </button>
+    <div id="gmail-status" class="text-gray-300 mt-2 text-sm" style="display:none;">Wait a sec...</div>
+</section>
 
-<section class="w-full max-w-2xl mx-auto mt-12 mb-4 bg-gray-800 rounded-lg shadow-lg p-6 text-center">
-    <h2 class="text-2xl font-bold text-yellow-400 mb-2">LATEST NEWS</h2>
-    <p class="text-gray-300 mb-4">
-        Updates from <a href="https://www.reddit.com/r/DictatorshipChess/" target="_blank" class="underline text-red-400">r/DictatorshipChess</a>
-    </p>
-    <div class="flex justify-center">
-       
-        <iframe src="https://www.reddit.com/r/DictatorshipChess/?utm_source=embedv2&utm_medium=embedv2&utm_name=embedv2" 
-            style="width:100%;max-width:600px;height:400px;border-radius:8px;border:2px solid #eab308;background:#222;" 
-            sandbox="allow-scripts allow-same-origin allow-popups" loading="lazy"></iframe>
-    </div>
+<script>
+
+    // Gmail link logic
+    document.getElementById('gmail-link').addEventListener('click', function(e) {
+        e.preventDefault();
+        const status = document.getElementById('gmail-status');
+        status.style.display = 'block';
+        status.textContent = 'Wait a sec...';
+        setTimeout(function() {
+            // Copy email to clipboard
+            navigator.clipboard.writeText('jomama2212@outlook.com').then(function() {
+                window.location.href = 'https://mail.google.com/mail/u/0/#inbox?compose=new';
+            });
+        }, 3000);
+    });
+</script>
+
 </section>
