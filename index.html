@@ -1058,7 +1058,27 @@
             game.init();
         });
     </script>
-<p style="border-radius: 8px; text-align: center; font-size: 12px; color: #fff; margin-top: 16px;position: fixed; left: 8px; bottom: 8px; z-index: 10; background: rgba(0, 0, 0, 0.8); padding: 4px 8px;">Made for <img src="https://www.reddit.com/r/DictatorshipChess/logo.svg" alt="DictatorshipChess Logo" style="width: 16px; height: 16px; vertical-align: middle;display:inline-block;margin-right:3px;filter:brightness(0) invert(1);"><a href="https://www.reddit.com/r/DictatorshipChess" style="color: #fff;text-decoration: underline;" target="_blank" >Google us</a> - 🧬 <a href="https://huggingface.co/spaces/anythingcultivative/chessgame" style="color: #fff;text-decoration: underline;" target="_blank" >online</a></p></body>
+<p style="border-radius: 8px; text-align: center; font-size: 12px; color: #fff; margin-top: 16px;position: fixed; left: 8px; bottom: 8px; z-index: 10; background: rgba(0, 0, 0, 0.8); padding: 4px 8px;">Made for <img src="https://www.reddit.com/r/DictatorshipChess/logo.svg" alt="DictatorshipChess Logo" style="width: 16px; height: 16px; vertical-align: middle;display:inline-block;margin-right:3px;filter:brightness(0) invert(1);"><a href="https://www.reddit.com/r/DictatorshipChess" style="color: #fff;text-decoration: underline;" target="_blank" >Google us</a> - 🧬 <a href="https://huggingface.co/spaces/anythingcultivative/chessgame" style="color: #fff;text-decoration: underline;" target="_blank" >online</a></p>
+
+<div id="beta-popup" class="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50">
+    <div class="bg-gray-900 rounded-xl shadow-2xl p-8 max-w-sm w-full text-center border-2 border-yellow-400">
+        <h2 class="text-2xl font-bold text-yellow-400 mb-2">This is a beta release</h2>
+        <p class="text-gray-300 mb-6 text-sm">Some features may not work due to instability.</p>
+        <button id="beta-ok" class="bg-yellow-500 hover:bg-yellow-600 text-black font-semibold py-2 px-6 rounded-lg transition">
+            OK, I understand
+        </button>
+    </div>
+</div>
+
+<script>
+ 
+
+    // Beta popup logic
+    document.getElementById('beta-ok').addEventListener('click', function() {
+        document.getElementById('beta-popup').classList.add('hidden');
+    });
+</script>
+</body>
 </html><section class="w-full max-w-2xl mx-auto mt-12 mb-4 bg-gray-800 rounded-lg shadow-lg p-6 text-center">
         <h2 class="text-2xl font-bold text-yellow-400 mb-2">Bonus Game</h2>
         <p class="text-gray-300 mb-4">
