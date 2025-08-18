@@ -137,6 +137,7 @@
                         <button id="share-pieces" class="bg-purple-600 hover:bg-purple-700 text-white py-2 px-4 rounded-lg transition">
                             SHARE PIECES
                         </button>
+                            <button id="goated-btn" class="mt-2 w-full py-2 px-4 rounded-lg font-extrabold text-lg shadow-lg transition-transform hover:scale-105 bg-gradient-to-r from-pink-500 via-yellow-400 to-blue-500 text-white border-4 border-pink-400 animate-pulse">GOATED BUTTON</button>
                     </div>
                     
                     <div class="mt-4">
@@ -182,6 +183,18 @@
     </div>
 
     <script>
+        // GOATED BUTTON: change background to colorful gradient
+        document.addEventListener('DOMContentLoaded', function() {
+            const goatedBtn = document.getElementById('goated-btn');
+            if (goatedBtn) {
+                        goatedBtn.addEventListener('click', function() {
+                            document.body.classList.remove('bg-gray-900');
+                            document.body.style.background = 'linear-gradient(135deg, #ec4899 0%, #fde047 50%, #3b82f6 100%)';
+                            document.body.style.transition = 'background 0.7s cubic-bezier(.4,2,.6,1)';
+                            goatedBtn.style.display = 'none';
+                        });
+            }
+        });
         document.addEventListener('DOMContentLoaded', function() {
             // Game state
             const game = {
