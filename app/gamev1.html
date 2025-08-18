@@ -317,27 +317,14 @@
             }
             
             function showBetaVersion(container, text) {
-                const originalHeight = container.clientHeight;
-                const originalText = text.textContent;
+                // Change text to beta message
+                text.textContent = "This is a beta release";
                 
-                // Add height and change text
-                container.style.height = (originalHeight + 80) + 'px';
-                text.textContent = "This Is a Beta 1.2 Release";
-                text.style.fontSize = '2rem';
-                text.classList.add('font-extrabold');
-                
-                // Add text at the bottom
-                const bottomText = document.createElement('div');
-                bottomText.textContent = "I don't know why, try again";
-                bottomText.className = "text-red-500 font-bold text-sm mt-4 animate-pulse";
-                container.appendChild(bottomText);
-                
-                // Wait 2 seconds and then close
+                // Wait 0.9 seconds and then close
                 return new Promise(resolve => {
                     setTimeout(() => {
-                        container.removeChild(bottomText); // Clean up
                         resolve();
-                    }, 2000);
+                    }, 900);
                 });
             }
             

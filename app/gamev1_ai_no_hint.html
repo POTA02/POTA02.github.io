@@ -105,7 +105,7 @@
 
         <div class="flex flex-col gap-2">
           <button id="new-game" class="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg transition">New Game</button>
-          <button id="hint-btn" class="bg-yellow-600 hover:bg-yellow-700 text-white py-2 px-4 rounded-lg transition">Hint(im dumb)</button>
+          <button id="pawn-mode-btn" class="bg-yellow-600 hover:bg-yellow-700 text-white py-2 px-4 rounded-lg transition">Pawn Mode: OFF</button>
           <button id="undo-move" class="bg-gray-600 hover:bg-gray-700 text-white py-2 px-4 rounded-lg transition">Undo Move</button>
           <button id="force-ai" class="bg-purple-600 hover:bg-purple-700 text-white py-2 px-4 rounded-lg transition">Make Computer Move</button>
           <button id="goated-btn" class="mt-2 w-full py-2 px-4 rounded-lg font-extrabold text-lg shadow-lg transition-transform hover:scale-105 bg-gradient-to-r from-pink-500 via-yellow-400 to-blue-500 text-white border-4 border-pink-400 animate-pulse">GOATED BUTTON</button>
@@ -516,6 +516,7 @@ document.addEventListener('DOMContentLoaded', function() {
     vsComputer: false,
     computerSide: 'black',
     newGameClickCount: 0, // Easter egg counter
+    pawnMode: false, // Pawn capture mode: win by capturing all opponent pawns
 
     init() {
       this.setupBoard();
@@ -711,8 +712,8 @@ document.addEventListener('DOMContentLoaded', function() {
         this.undoMove();
       });
 
-      document.getElementById('hint-btn').addEventListener('click', () => {
-        this.showHint();
+      document.getElementById('pawn-mode-btn').addEventListener('click', () => {
+        this.togglePawnMode();
       });
 
       document.querySelectorAll('.promotion-option').forEach(option => {
@@ -944,6 +945,24 @@ document.addEventListener('DOMContentLoaded', function() {
     },
 
     checkGameStatus() {
+      // Check for pawn mode win condition first
+      if (this.pawnMode) {
+        const whitePawns = this.countPawns('white');
+        const blackPawns = this.countPawns('black');
+        
+        if (whitePawns === 0) {
+          this.gameOver = true;
+          document.getElementById('game-status').textContent = 'Black wins - All white pawns captured!';
+          return;
+        }
+        if (blackPawns === 0) {
+          this.gameOver = true;
+          document.getElementById('game-status').textContent = 'White wins - All black pawns captured!';
+          return;
+        }
+      }
+      
+      // Standard checkmate/stalemate logic
       const inCheck = this.isKingInCheck(this.turn);
       this.highlightKingInCheck(this.turn, inCheck);
 
@@ -967,15 +986,32 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('game-status').textContent = 'Check!';
       } else {
         this.check = false;
-        if (!this.gameOver) document.getElementById('game-status').textContent = 'Playing';
+        if (!this.gameOver) {
+          if (this.pawnMode) {
+            const whitePawns = this.countPawns('white');
+            const blackPawns = this.countPawns('black');
+            document.getElementById('game-status').textContent = `Pawn Mode - W:${whitePawns} B:${blackPawns}`;
+          } else {
+            document.getElementById('game-status').textContent = 'Playing';
+          }
+        }
       }
     },
 
     updateGameInfo() {
       document.getElementById('current-turn').textContent = this.turn === 'white' ? 'White' : 'Black';
       document.getElementById('turn-indicator').style.backgroundColor = this.turn === 'white' ? 'white' : 'black';
-      if (this.check) document.getElementById('game-status').textContent = 'Check!';
-      else if (!this.gameOver) document.getElementById('game-status').textContent = 'Playing';
+      if (this.check) {
+        document.getElementById('game-status').textContent = 'Check!';
+      } else if (!this.gameOver) {
+        if (this.pawnMode) {
+          const whitePawns = this.countPawns('white');
+          const blackPawns = this.countPawns('black');
+          document.getElementById('game-status').textContent = `Pawn Mode - W:${whitePawns} B:${blackPawns}`;
+        } else {
+          document.getElementById('game-status').textContent = 'Playing';
+        }
+      }
     },
 
     updateCapturedPiecesDisplay() {
@@ -1056,6 +1092,37 @@ document.addEventListener('DOMContentLoaded', function() {
           this.completePromotion('queen');
         }
       }, force ? 150 : 250);
+    },
+
+    togglePawnMode() {
+      this.pawnMode = !this.pawnMode;
+      const button = document.getElementById('pawn-mode-btn');
+      if (this.pawnMode) {
+        button.textContent = 'Pawn Mode: ON';
+        button.classList.remove('bg-yellow-600', 'hover:bg-yellow-700');
+        button.classList.add('bg-green-600', 'hover:bg-green-700');
+        alert('🎯 Pawn Mode Activated!\n\nNew win condition: Capture ALL opponent pawns to win!');
+      } else {
+        button.textContent = 'Pawn Mode: OFF';
+        button.classList.remove('bg-green-600', 'hover:bg-green-700');
+        button.classList.add('bg-yellow-600', 'hover:bg-yellow-700');
+        alert('♟️ Pawn Mode Deactivated!\n\nBack to normal chess rules.');
+      }
+      // Update game status display
+      this.updateGameInfo();
+    },
+
+    countPawns(color) {
+      let count = 0;
+      for (let r = 0; r < 8; r++) {
+        for (let c = 0; c < 8; c++) {
+          const piece = this.board[r][c];
+          if (piece && piece.type === 'pawn' && piece.color === color) {
+            count++;
+          }
+        }
+      }
+      return count;
     },
 
     showHint() {

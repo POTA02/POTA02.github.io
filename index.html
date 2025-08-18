@@ -157,10 +157,10 @@
 
                     <!-- Preview Button 1 -->
                     <div class="flex flex-col items-center">
-                        <button onclick="window.location.href='app/gamev1_ai_no_hint.html'" class="w-full aspect-square bg-gradient-to-br from-blue-500 via-cyan-500 to-teal-500 hover:from-blue-600 hover:via-cyan-600 hover:to-teal-600 rounded-lg flex items-center justify-center transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl">
+                        <button id="aiPawnCaptureBtn" class="w-full aspect-square bg-gradient-to-br from-blue-500 via-cyan-500 to-teal-500 hover:from-blue-600 hover:via-cyan-600 hover:to-teal-600 rounded-lg flex items-center justify-center transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl">
                             <i class="fas fa-robot text-3xl text-white drop-shadow-lg"></i>
                         </button>
-                        <p class="text-sm mt-2" style="font-family: 'Press Start 2P', cursive; font-size: 0.6rem;">AI NO HINTS</p>
+                        <p class="text-sm mt-2" style="font-family: 'Press Start 2P', cursive; font-size: 0.6rem;">AI PAWN CAPTURE</p>
                     </div>
 
                     <!-- Preview Button 2 -->
@@ -194,6 +194,21 @@
         </div>
     </div>
 
+    <!-- AI Pawn Capture Warning Popup -->
+    <div id="aiWarningPopup" class="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center hidden z-50">
+        <div class="bg-gray-800 rounded-xl p-8 max-w-md w-full mx-4 border border-yellow-500 relative">
+            <h3 class="text-2xl font-bold mb-4 text-yellow-400 text-center">
+                <i class="fas fa-exclamation-triangle mr-2"></i>WARNING
+            </h3>
+            <p class="text-gray-300 mb-6 text-center">I dont know why, but you need to activate a button to play it</p>
+            <div class="flex justify-center">
+                <button id="aiWarningOk" class="px-6 py-3 bg-yellow-500 hover:bg-yellow-600 text-black font-bold rounded-lg transition">
+                    OK, close
+                </button>
+            </div>
+        </div>
+    </div>
+
     <script>
 document.addEventListener('DOMContentLoaded', function() {
     // Main launch button functionality
@@ -206,6 +221,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const previewGoogle = document.getElementById('previewGoogle');
     const previewYouTube = document.getElementById('previewYouTube');
     const previewWIP = document.getElementById('previewWIP');
+    const aiPawnCaptureBtn = document.getElementById('aiPawnCaptureBtn');
+    const aiWarningPopup = document.getElementById('aiWarningPopup');
+    const aiWarningOk = document.getElementById('aiWarningOk');
 
     if (mainLaunchButton) {
         mainLaunchButton.addEventListener('click', () => {
@@ -261,6 +279,26 @@ document.addEventListener('DOMContentLoaded', function() {
             setTimeout(() => {
                 actionPopup.classList.add('hidden');
             }, 300);
+        });
+    }
+
+    // AI Pawn Capture warning functionality
+    if (aiPawnCaptureBtn) {
+        aiPawnCaptureBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            aiWarningPopup.classList.remove('hidden');
+            // Close the action popup
+            popupContent.classList.add('scale-95', 'opacity-0');
+            setTimeout(() => {
+                actionPopup.classList.add('hidden');
+            }, 300);
+        });
+    }
+
+    if (aiWarningOk) {
+        aiWarningOk.addEventListener('click', () => {
+            aiWarningPopup.classList.add('hidden');
+            window.location.href = 'app/gamev1_ai_no_hint.html';
         });
     }
 
