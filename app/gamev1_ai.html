@@ -19,10 +19,122 @@
 .notation { position: absolute; font-size: 10px; pointer-events: none; }
 .rank { left: 2px; top: 2px; }
 .file { right: 2px; bottom: 2px; }
+.hint-from { box-shadow: inset 0 0 15px 5px rgba(0,255,0,.6) !important; animation: pulse-green 1.5s infinite; }
+.hint-to { box-shadow: inset 0 0 15px 5px rgba(255,165,0,.6) !important; animation: pulse-orange 1.5s infinite; }
+.hint-button:disabled { opacity: 0.6; cursor: not-allowed; animation: pulse-disabled 1s infinite; }
+.hint-button.loading { background: linear-gradient(45deg, #dc2626, #ef4444) !important; cursor: not-allowed; }
+.spinner { display: inline-block; width: 16px; height: 16px; border: 2px solid rgba(255,255,255,.3); border-radius: 50%; border-top-color: white; animation: spin 1s ease-in-out infinite; margin-right: 8px; }
+@keyframes pulse-green { 0%, 100% { box-shadow: inset 0 0 15px 5px rgba(0,255,0,.6); } 50% { box-shadow: inset 0 0 15px 5px rgba(0,255,0,.3); } }
+@keyframes pulse-orange { 0%, 100% { box-shadow: inset 0 0 15px 5px rgba(255,165,0,.6); } 50% { box-shadow: inset 0 0 15px 5px rgba(255,165,0,.3); } }
+@keyframes pulse-disabled { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 @media (max-width: 500px) { .piece { width: 90%; height: 90%; } }
 </style>
 </head>
 <body class="bg-gray-900 text-white min-h-screen flex flex-col items-center justify-center p-4">
+<<<<<<< Updated upstream
+=======
+            //* RULES POPUP
+<div id="rules-popup" style="z-index:1000;" class="fixed inset-0 flex items-center justify-center bg-gradient-to-br from-pink-500/80 via-yellow-400/80 to-blue-500/80">
+  <div id="rules-popup-inner" class="transition-all duration-300 bg-white rounded-2xl shadow-2xl p-8 max-w-xs w-full border-4 border-pink-400 flex flex-col items-center relative">
+    <h2 class="text-3xl font-extrabold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-pink-500 via-yellow-400 to-blue-500 animate-pulse">RULES CHANGED</h2>
+    <ul class="text-lg font-semibold text-gray-800 mb-4 space-y-2">
+      <li><span class="font-bold text-pink-600">-</span> <span class="text-blue-600">Removed Castling</span></li>
+      <li><span class="font-bold text-pink-600">-</span> <span class="text-yellow-600">Removed En passant</span></li>
+    </ul>
+    <div id="reason-text" class="overflow-hidden transition-all duration-300 h-0 text-center text-purple-700 font-bold text-lg mb-2"></div>
+    <div class="flex gap-4 mt-2">
+      <button id="merged-close" class="bg-gradient-to-r from-green-400 via-yellow-400 to-blue-500 text-white font-bold px-4 py-2 rounded-lg shadow hover:scale-105 transition-transform">CLOSE</button>
+      <button id="rules-reason" class="bg-gradient-to-r from-yellow-400 via-pink-500 to-red-500 text-white font-bold px-4 py-2 rounded-lg shadow hover:scale-105 transition-transform">REASON</button>
+    </div>
+  </div>
+</div>
+
+<!-- BETA ROLLING TEXT POPUP -->
+<div id="beta-popup" style="z-index:999; display:none;" class="fixed inset-0 flex items-center justify-center bg-black/60">
+  <div class="rounded-2xl shadow-2xl p-8 max-w-md w-full border-4 border-blue-400 flex flex-col items-center relative bg-gradient-to-br from-blue-400/80 via-pink-400/80 to-yellow-300/80">
+    <div class="w-full overflow-hidden h-12 flex items-center justify-center mb-2">
+      <div id="rolling-text" class="whitespace-nowrap text-2xl md:text-3xl font-extrabold bg-gradient-to-r from-pink-500 via-yellow-400 to-blue-500 bg-clip-text text-transparent animate-rolling">THIS IS A BETA RELEASE</div>
+    </div>
+    <div class="text-sm text-gray-700 font-semibold text-center mt-2 animate-pulse">some features may not work due to instability.</div>
+    <button id="merged-close-beta" class="mt-6 px-6 py-2 rounded-lg font-bold text-lg shadow-lg bg-gradient-to-r from-green-400 via-yellow-400 to-blue-500 text-white border-4 border-blue-400 hover:scale-105 transition-transform">CLOSE</button>
+  </div>
+</div>
+
+<style>
+@keyframes rolling {
+  0% { transform: translateX(100%); }
+  100% { transform: translateX(-100%); }
+}
+.animate-rolling {
+  animation: rolling 5s linear 1;
+}
+
+/* Advanced Hints CSS */
+.hint-primary {
+  background-color: #10b981 !important;
+  box-shadow: 0 0 20px rgba(16, 185, 129, 0.6);
+  border: 3px solid #059669;
+}
+
+.hint-secondary {
+  background-color: #3b82f6 !important;
+  box-shadow: 0 0 15px rgba(59, 130, 246, 0.5);
+  border: 2px solid #2563eb;
+}
+
+.prediction-arrow {
+  position: absolute;
+  pointer-events: none;
+  z-index: 10;
+  font-size: 30px;
+  color: #ef4444;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.7; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.1); }
+}
+
+.advanced-hints-button {
+  background: linear-gradient(45deg, #8b5cf6, #ec4899) !important;
+  color: white !important;
+  border: none !important;
+  box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4) !important;
+  animation: glow 2s infinite alternate;
+}
+
+@keyframes glow {
+  from { box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4); }
+  to { box-shadow: 0 6px 25px rgba(139, 92, 246, 0.8); }
+}
+
+.bot-move-button {
+  background: linear-gradient(45deg, #f59e0b, #ef4444) !important;
+  color: white !important;
+  border: none !important;
+  animation: shimmer 3s infinite;
+}
+
+.bot-move-button:disabled {
+  background: #6b7280 !important;
+  cursor: not-allowed !important;
+  animation: none !important;
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes slideIn {
+  from { transform: translateX(100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+</style>
+>>>>>>> Stashed changes
 <div class="max-w-5xl w-full">
   <div class="flex items-center justify-center mb-6">
     <svg id="site-logo" width="48" height="48" viewBox="0 0 48 48" class="mr-4 transition-colors duration-100" xmlns="http://www.w3.org/2000/svg">
@@ -71,6 +183,13 @@
           <button id="new-game" class="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg transition">New Game</button>
           <button id="undo-move" class="bg-gray-600 hover:bg-gray-700 text-white py-2 px-4 rounded-lg transition">Undo Move</button>
           <button id="force-ai" class="bg-purple-600 hover:bg-purple-700 text-white py-2 px-4 rounded-lg transition">Make Computer Move</button>
+<<<<<<< Updated upstream
+=======
+          <button id="hint-btn" class="hint-button bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded-lg transition font-bold">HINT</button>
+          <button id="advanced-hints-btn" class="advanced-hints-button py-2 px-4 rounded-lg transition font-bold hidden">ADVANCED HINTS</button>
+          <button id="bot-move-btn" class="bot-move-button py-2 px-4 rounded-lg transition font-bold hidden">MAKE BOT MOVE</button>
+          <button id="goated-btn" class="mt-2 w-full py-2 px-4 rounded-lg font-extrabold text-lg shadow-lg transition-transform hover:scale-105 bg-gradient-to-r from-pink-500 via-yellow-400 to-blue-500 text-white border-4 border-pink-400 animate-pulse">GOATED BUTTON</button>
+>>>>>>> Stashed changes
         </div>
 
         <div class="mt-4">
@@ -184,6 +303,354 @@ document.addEventListener('DOMContentLoaded', function() {
       game.board[from.r][from.c] = ofp;
       game.board[to.r][to.c] = otp;
       return inCheck;
+    },
+
+    // Stockfish-like hint engine with Web Worker to prevent freezing
+    hintWorker: null,
+    advancedHintWorker: null,
+    hintCalculationInProgress: false,
+    
+        initializeHintEngine() {
+            try {
+                console.log('Initializing hint worker...');
+                this.hintWorker = new Worker('hintWorker.js');
+                this.hintWorker.onmessage = (e) => {
+                    console.log('Received worker message:', e.data);
+                    this.handleHintWorkerMessage(e.data);
+                };
+                this.hintWorker.onerror = (error) => {
+                    console.error('Hint worker error:', error);
+                    this.hintCalculationInProgress = false;
+                };
+                console.log('Hint worker initialized successfully');
+            } catch (error) {
+                if (error.name === 'SecurityError') {
+                    console.log('Web Worker blocked by security policy (normal for file:// URLs) - using main thread fallback');
+                } else {
+                    console.error('Failed to initialize hint worker:', error);
+                }
+                // Fallback to main thread if worker fails
+                this.hintWorker = null;
+            }
+            
+            // Initialize advanced hint worker
+            try {
+                console.log('Initializing advanced hint worker...');
+                this.advancedHintWorker = new Worker('advancedHintWorker.js');
+                this.advancedHintWorker.onmessage = (e) => {
+                    console.log('Received advanced worker message:', e.data);
+                    this.handleAdvancedHintWorkerMessage(e.data);
+                };
+                this.advancedHintWorker.onerror = (error) => {
+                    console.error('Advanced hint worker error:', error);
+                };
+                console.log('Advanced hint worker initialized successfully');
+            } catch (error) {
+                if (error.name === 'SecurityError') {
+                    console.log('Advanced Web Worker blocked by security policy (normal for file:// URLs) - using main thread fallback');
+                } else {
+                    console.error('Failed to initialize advanced hint worker:', error);
+                }
+                this.advancedHintWorker = null;
+            }
+        },
+        
+        // Fast hint AI - optimized for speed and good tactical awareness
+        getHintMove(game, color) {
+            console.log('getHintMove called with color:', color);
+            console.log('Hint calculation in progress:', this.hintCalculationInProgress);
+            console.log('Worker available:', !!this.hintWorker);
+            
+            if (this.hintCalculationInProgress) {
+                console.log('Hint calculation already in progress...');
+                return null;
+            }
+            
+            if (this.hintWorker) {
+                // Use Web Worker for calculation to prevent freezing
+                console.log('Using Web Worker for hint calculation');
+                this.hintCalculationInProgress = true;
+                this.hintWorker.postMessage({
+                    boardState: this.copyBoard(game.board),
+                    color: color,
+                    depth: 5 // Deeper search possible with worker
+                });
+                return 'calculating'; // Special return value
+            } else {
+                // Fallback to main thread with lighter calculation
+                console.log('Using main thread for hint calculation');
+                return this.getHintMoveMainThread(game, color);
+            }
+        },
+    
+    handleHintWorkerMessage(data) {
+      this.hintCalculationInProgress = false;
+      if (data.success && data.move) {
+        // Update the game with the calculated hint
+        this.displayCalculatedHint(data.move);
+      } else {
+        console.error('Hint calculation failed:', data.error);
+        // Fallback to main thread calculation
+        const fallbackMove = this.getHintMoveMainThread(game, game.turn);
+        if (fallbackMove) {
+          this.displayCalculatedHint(fallbackMove);
+        }
+      }
+    },
+    
+    displayCalculatedHint(hintMove) {
+      if (hintMove && typeof game !== 'undefined') {
+        game.showHintAtCoordinates(hintMove.from.r, hintMove.from.c, hintMove.to.r, hintMove.to.c);
+      }
+    },
+    
+    // Handle messages from the advanced hint worker
+    handleAdvancedHintWorkerMessage(data) {
+      console.log('Advanced worker response:', data);
+      
+      switch (data.type) {
+        case 'topMoves':
+          if (typeof game !== 'undefined') {
+            game.processAdvancedHints(data.moves);
+          }
+          break;
+          
+        case 'bestResponse':
+          if (typeof game !== 'undefined') {
+            game.processBotPrediction(data.move);
+          }
+          break;
+          
+        case 'evaluation':
+          console.log('Position evaluation:', data.score);
+          break;
+          
+        case 'error':
+          console.error('Advanced worker error:', data.message);
+          break;
+      }
+    },
+    
+    copyBoard(board) {
+      return board.map(row => 
+        row.map(cell => cell ? {...cell} : null)
+      );
+    },
+    
+    getHintMoveMainThread(game, color) {
+      const moves = this.generateAllLegalMoves(game, color);
+      if (moves.length === 0) return null;
+      
+      // Use lighter search for main thread to prevent freezing
+      let bestScore = -Infinity;
+      let bestMove = null;
+      
+      for (const move of moves) {
+        const undo = this.makeMove(game, move);
+        const score = -this.hintMinimaxLight(game, this.getOpponent(color), 2, -Infinity, Infinity);
+        this.unmakeMove(game, move, undo);
+        
+        if (score > bestScore) {
+          bestScore = score;
+          bestMove = move;
+        }
+      }
+      
+      return bestMove;
+    },
+
+    // Light 2-ply minimax for main thread (prevents freezing)
+    hintMinimaxLight(game, color, depth, alpha, beta) {
+      if (depth === 0) {
+        return this.quickEval(game, color);
+      }
+      
+      const moves = this.generateAllLegalMoves(game, color);
+      if (moves.length === 0) {
+        if (game.isKingInCheck(color)) {
+          return -9999 + (2 - depth);
+        }
+        return 0;
+      }
+      
+      // Limit move analysis to prevent freezing
+      const limitedMoves = moves.slice(0, 20); // Only analyze top 20 moves
+      
+      // Quick sort for better pruning
+      limitedMoves.sort((a, b) => {
+        const aCapture = game.board[a.to.r][a.to.c] ? this.pieceValues[game.board[a.to.r][a.to.c].type] : 0;
+        const bCapture = game.board[b.to.r][b.to.c] ? this.pieceValues[game.board[b.to.r][b.to.c].type] : 0;
+        return bCapture - aCapture;
+      });
+      
+      let maxScore = -Infinity;
+      
+      for (const move of limitedMoves) {
+        const undo = this.makeMove(game, move);
+        const score = -this.hintMinimaxLight(game, this.getOpponent(color), depth - 1, -beta, -alpha);
+        this.unmakeMove(game, move, undo);
+        
+        maxScore = Math.max(maxScore, score);
+        alpha = Math.max(alpha, score);
+        
+        if (beta <= alpha) {
+          break; // Alpha-beta cutoff
+        }
+      }
+      
+      return maxScore;
+    },
+
+    // Quick but comprehensive position evaluation
+    quickEval(game, color) {
+      let score = 0;
+      let myPieces = 0;
+      let enemyPieces = 0;
+      
+      for (let r = 0; r < 8; r++) {
+        for (let c = 0; c < 8; c++) {
+          const piece = game.board[r][c];
+          if (!piece) continue;
+          
+          const value = this.pieceValues[piece.type] || 0;
+          const positionalBonus = this.getPositionalValue(piece, r, c);
+          
+          if (piece.color === color) {
+            score += value + positionalBonus;
+            myPieces++;
+          } else {
+            score -= value + positionalBonus;
+            enemyPieces++;
+          }
+        }
+      }
+      
+      // Mobility bonus
+      const myMoves = this.generateAllLegalMoves(game, color).length;
+      const oppMoves = this.generateAllLegalMoves(game, this.getOpponent(color)).length;
+      score += (myMoves - oppMoves) * 2;
+      
+      // King safety
+      score += this.evaluateKingSafety(game, color) * 0.5;
+      score -= this.evaluateKingSafety(game, this.getOpponent(color)) * 0.5;
+      
+      return score;
+    },
+
+    // Positional value tables
+    getPositionalValue(piece, row, col) {
+      const centerDistance = Math.abs(3.5 - row) + Math.abs(3.5 - col);
+      
+      switch (piece.type) {
+        case 'pawn':
+          if (piece.color === 'white') {
+            return (7 - row) * 10 + (col >= 2 && col <= 5 ? 5 : 0);
+          } else {
+            return row * 10 + (col >= 2 && col <= 5 ? 5 : 0);
+          }
+        
+        case 'knight':
+          return Math.max(0, 40 - centerDistance * 10);
+        
+        case 'bishop':
+          return Math.max(0, 30 - centerDistance * 5);
+        
+        case 'rook':
+          return (row === 0 || row === 7 || col === 0 || col === 7) ? 10 : 5;
+        
+        case 'queen':
+          return Math.max(0, 20 - centerDistance * 3);
+        
+        case 'king':
+          // King should stay safe early game, centralize in endgame
+          const totalPieces = this.countPieces(game);
+          if (totalPieces > 20) {
+            // Opening/middlegame - stay in corner
+            return centerDistance * 5;
+          } else {
+            // Endgame - centralize
+            return Math.max(0, 20 - centerDistance * 8);
+          }
+        
+        default:
+          return 0;
+      }
+    },
+
+    // Evaluate king safety
+    evaluateKingSafety(game, color) {
+      let kingRow = -1, kingCol = -1;
+      
+      // Find king
+      for (let r = 0; r < 8; r++) {
+        for (let c = 0; c < 8; c++) {
+          const piece = game.board[r][c];
+          if (piece && piece.type === 'king' && piece.color === color) {
+            kingRow = r;
+            kingCol = c;
+            break;
+          }
+        }
+        if (kingRow !== -1) break;
+      }
+      
+      if (kingRow === -1) return -1000; // King not found
+      
+      let safety = 0;
+      const opp = this.getOpponent(color);
+      
+      // Penalty for being in check
+      if (game.isKingInCheck(color)) {
+        safety -= 50;
+      }
+      
+      // Count attackers around king
+      let attackers = 0;
+      for (let dr = -1; dr <= 1; dr++) {
+        for (let dc = -1; dc <= 1; dc++) {
+          const r = kingRow + dr;
+          const c = kingCol + dc;
+          if (r >= 0 && r < 8 && c >= 0 && c < 8) {
+            if (this.squareAttackedBy(game, r, c, opp)) {
+              attackers++;
+            }
+          }
+        }
+      }
+      
+      safety -= attackers * 10;
+      
+      return safety;
+    },
+
+    // Count total pieces on board
+    countPieces(game) {
+      let count = 0;
+      for (let r = 0; r < 8; r++) {
+        for (let c = 0; c < 8; c++) {
+          if (game.board[r][c]) count++;
+        }
+      }
+      return count;
+    },
+
+    // Get squares attacked by a piece after a move
+    getAttackedSquares(game, move, color) {
+      const { from, to } = move;
+      const originalPiece = game.board[from.r][from.c];
+      const originalTarget = game.board[to.r][to.c];
+      
+      // Make temporary move
+      game.board[to.r][to.c] = originalPiece;
+      game.board[from.r][from.c] = null;
+      
+      const attackedSquares = game.calculateRawMoves(to.r, to.c);
+      
+      // Restore board
+      game.board[from.r][from.c] = originalPiece;
+      game.board[to.r][to.c] = originalTarget;
+      
+      return attackedSquares;
     }
   };
 
@@ -201,12 +668,18 @@ document.addEventListener('DOMContentLoaded', function() {
     promotingPawn: null,
     vsComputer: false,
     computerSide: 'black',
+    newGameClickCount: 0, // Easter egg counter
+    advancedHintsEnabled: false,
+    botMoveUsed: false, // Track if the one-time bot move has been used
 
     init() {
       this.setupBoard();
       this.renderBoard();
       this.setupEventListeners();
       this.updateGameInfo();
+      
+      // Initialize the hint worker for advanced AI calculations
+      AI.initializeHintEngine();
     },
 
     setupBoard() {
@@ -353,6 +826,20 @@ document.addEventListener('DOMContentLoaded', function() {
         this.maybeAIMove(true);
       });
 
+      const hintButton = document.getElementById('hint-btn');
+      console.log('Hint button element:', hintButton);
+      if (hintButton) {
+        hintButton.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          console.log('Hint button clicked!');
+          this.showHint();
+        });
+        console.log('Hint button event listener attached');
+      } else {
+        console.error('Hint button not found!');
+      }
+
       board.addEventListener('click', (e) => {
         if (this.gameOver) return;
         const square = e.target.closest('.square');
@@ -385,8 +872,15 @@ document.addEventListener('DOMContentLoaded', function() {
       });
 
       document.getElementById('new-game').addEventListener('click', () => {
-        this.resetGame();
-        this.maybeAIMove(true);
+        this.newGameClickCount++;
+        console.log('New game clicked:', this.newGameClickCount, 'times');
+        
+        if (this.newGameClickCount >= 5 && !this.advancedHintsEnabled) {
+          this.enableAdvancedHints();
+        } else {
+          this.resetGame();
+          this.maybeAIMove(true);
+        }
       });
 
       document.getElementById('undo-move').addEventListener('click', () => {
@@ -417,6 +911,7 @@ document.addEventListener('DOMContentLoaded', function() {
         square.classList.remove('highlight');
       }
       this.hidePossibleMoves();
+      this.clearHint(); // Clear hint when selecting new pieces
       this.selectedSquare = null;
       this.possibleMoves = [];
     },
@@ -734,6 +1229,533 @@ document.addEventListener('DOMContentLoaded', function() {
           this.completePromotion('queen');
         }
       }, force ? 150 : 250);
+    },
+
+    showHint() {
+      console.log('showHint called');
+      if (this.gameOver) {
+        console.log('Game is over, not showing hint');
+        return;
+      }
+      
+      // Show loading immediately when button is clicked
+      this.showHintLoadingIndicator();
+      
+      // Clear any existing hint highlighting
+      this.clearHint();
+      
+      // Get the best move for the current player using hint AI
+      console.log('Getting hint for current player:', this.turn);
+      console.log('AI object:', AI);
+      
+      let bestMove = null;
+      try {
+        bestMove = AI.getHintMove(this, this.turn);
+        console.log('Hint AI returned:', bestMove);
+      } catch (error) {
+        console.error('Error getting hint move:', error);
+        // Fallback to simple move selection
+        bestMove = this.getSimpleHint();
+      }
+      
+      // Handle different return types from hint AI
+      if (bestMove === 'calculating') {
+        // Worker is calculating - loading indicator already shown
+        console.log('Worker is calculating hint...');
+        return;
+      } else if (bestMove) {
+        // Direct result from main thread calculation
+        console.log('Displaying hint move:', bestMove);
+        this.displayHintMove(bestMove);
+      } else {
+        console.log('No hint move available - trying simple fallback');
+        // Try simple fallback
+        const simpleBestMove = this.getSimpleHint();
+        if (simpleBestMove) {
+          this.displayHintMove(simpleBestMove);
+        } else {
+          // No moves available, reset button
+          this.resetHintButton();
+        }
+      }
+    },
+    
+    // Simple fallback hint function
+    getSimpleHint() {
+      console.log('Getting simple hint...');
+      try {
+        const moves = AI.generateAllLegalMoves(this, this.turn);
+        console.log('Available moves:', moves.length);
+        if (moves.length > 0) {
+          // Just return the first available move as a simple hint
+          return moves[0];
+        }
+      } catch (error) {
+        console.error('Error in simple hint:', error);
+      }
+      return null;
+    },
+    
+    showHintLoadingIndicator() {
+      // Add a visual indicator that hint is being calculated
+      const hintButton = document.getElementById('hint-btn');
+      if (hintButton) {
+        // Add loading class for red background
+        hintButton.classList.add('loading');
+        hintButton.disabled = true;
+        
+        // Create spinner element
+        const spinner = document.createElement('div');
+        spinner.className = 'spinner';
+        
+        // Update button content with spinner and text
+        hintButton.innerHTML = '';
+        hintButton.appendChild(spinner);
+        hintButton.appendChild(document.createTextNode('Loading'));
+        
+        // Reset button after timeout (in case worker fails)
+        setTimeout(() => {
+          this.resetHintButton();
+        }, 10000); // Increased timeout for complex calculations
+      }
+    },
+    
+    resetHintButton() {
+      const hintButton = document.getElementById('hint-btn');
+      if (hintButton) {
+        hintButton.classList.remove('loading');
+        hintButton.disabled = false;
+        hintButton.textContent = 'HINT';
+      }
+    },
+    
+    displayHintMove(bestMove) {
+      console.log('displayHintMove called with:', bestMove);
+      
+      // Validate move structure
+      if (!bestMove || !bestMove.from || !bestMove.to) {
+        console.error('Invalid move structure:', bestMove);
+        return;
+      }
+      
+      console.log('From:', bestMove.from.r, bestMove.from.c);
+      console.log('To:', bestMove.to.r, bestMove.to.c);
+      
+      // Highlight the from and to squares
+      const fromSquare = this.getSquareElement(bestMove.from.r, bestMove.from.c);
+      const toSquare = this.getSquareElement(bestMove.to.r, bestMove.to.c);
+      
+      console.log('From square element:', fromSquare);
+      console.log('To square element:', toSquare);
+      
+      if (fromSquare && toSquare) {
+        console.log('Adding hint classes...');
+        fromSquare.classList.add('hint-from');
+        toSquare.classList.add('hint-to');
+        
+        // Visual confirmation
+        console.log('From square classes:', fromSquare.className);
+        console.log('To square classes:', toSquare.className);
+        
+        // Auto-clear hint after 4 seconds
+        setTimeout(() => {
+          this.clearHint();
+        }, 4000);
+      } else {
+        console.error('Could not find square elements');
+        console.error('fromSquare:', fromSquare, 'toSquare:', toSquare);
+      }
+      
+      // Reset hint button if it was in loading state
+      this.resetHintButton();
+    },
+
+    // Method to show hint with specific coordinates (called by worker)
+    showHintAtCoordinates(fromR, fromC, toR, toC) {
+      // Called with specific coordinates
+      this.clearHint();
+      const fromSquare = this.getSquareElement(fromR, fromC);
+      const toSquare = this.getSquareElement(toR, toC);
+      
+      if (fromSquare && toSquare) {
+        fromSquare.classList.add('hint-from');
+        toSquare.classList.add('hint-to');
+        
+        setTimeout(() => {
+          this.clearHint();
+        }, 4000);
+      }
+      
+      // Reset hint button
+      this.resetHintButton();
+    },
+
+    clearHint() {
+      document.querySelectorAll('.hint-from, .hint-to').forEach(square => {
+        square.classList.remove('hint-from', 'hint-to');
+      });
+      // Clear advanced hints too
+      document.querySelectorAll('.hint-primary, .hint-secondary').forEach(square => {
+        square.classList.remove('hint-primary', 'hint-secondary');
+      });
+      // Clear prediction arrows
+      document.querySelectorAll('.prediction-arrow').forEach(arrow => {
+        arrow.remove();
+      });
+    },
+
+    // Advanced Hints Feature
+    enableAdvancedHints() {
+      console.log('🚀 Advanced Hints Mode Activated!');
+      this.advancedHintsEnabled = true;
+      
+      // Replace new game button with advanced hints button
+      const newGameBtn = document.getElementById('new-game');
+      const advancedHintsBtn = document.getElementById('advanced-hints-btn');
+      const botMoveBtn = document.getElementById('bot-move-btn');
+      
+      newGameBtn.style.display = 'none';
+      advancedHintsBtn.classList.remove('hidden');
+      botMoveBtn.classList.remove('hidden');
+      
+      // Add event listeners
+      advancedHintsBtn.addEventListener('click', () => this.showAdvancedHints());
+      botMoveBtn.addEventListener('click', () => this.makeBotMove());
+      
+      // Show notification
+      this.showAdvancedHintsNotification();
+      
+      // Reset game
+      this.resetGame();
+      this.maybeAIMove(true);
+    },
+
+    showAdvancedHintsNotification() {
+      // Create notification element
+      const notification = document.createElement('div');
+      notification.style.cssText = `
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: linear-gradient(45deg, #8b5cf6, #ec4899);
+        color: white;
+        padding: 20px 30px;
+        border-radius: 15px;
+        font-size: 18px;
+        font-weight: bold;
+        text-align: center;
+        z-index: 1000;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        animation: bounce 0.5s ease-out;
+      `;
+      notification.innerHTML = `
+        🎉 ADVANCED HINTS UNLOCKED! 🎉<br>
+        <small style="font-size: 14px; opacity: 0.9;">
+          • Top 2 move suggestions<br>
+          • Bot move predictions<br>
+          • One-time bot move control
+        </small>
+      `;
+      
+      document.body.appendChild(notification);
+      
+      // Remove after 4 seconds
+      setTimeout(() => {
+        notification.style.animation = 'fadeOut 0.5s ease-out';
+        setTimeout(() => notification.remove(), 500);
+      }, 4000);
+      
+      // Add CSS for animations
+      const style = document.createElement('style');
+      style.textContent = `
+        @keyframes bounce {
+          0% { transform: translate(-50%, -50%) scale(0.3); opacity: 0; }
+          50% { transform: translate(-50%, -50%) scale(1.05); }
+          100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+        }
+        @keyframes fadeOut {
+          to { opacity: 0; transform: translate(-50%, -50%) scale(0.95); }
+        }
+      `;
+      document.head.appendChild(style);
+    },
+
+    showAdvancedHints() {
+      console.log('🔮 Advanced Hints requested');
+      if (this.gameOver) {
+        console.log('Game is over, not showing hints');
+        return;
+      }
+      
+      // Clear existing hints
+      this.clearHint();
+      
+      // Get top 2 moves
+      const topMoves = this.getTopMoves(2);
+      
+      if (topMoves === 'calculating') {
+        console.log('Advanced hints calculating via worker...');
+        // Worker will call processAdvancedHints when done
+        return;
+      }
+      
+      // Handle synchronous result (fallback)
+      if (topMoves.length >= 1) {
+        this.displayAdvancedHint(topMoves[0], 'primary');
+      }
+      if (topMoves.length >= 2) {
+        this.displayAdvancedHint(topMoves[1], 'secondary');
+      }
+      
+      // Show prediction arrows for potential bot responses
+      if (topMoves.length >= 1) {
+        this.showBotPredictions(topMoves[0]);
+      }
+    },
+
+    getTopMoves(count = 2) {
+      console.log('Calculating top', count, 'moves...');
+      
+      // Try to use advanced worker if available
+      if (AI.advancedHintWorker) {
+        console.log('Using advanced worker for top moves calculation');
+        AI.advancedHintWorker.postMessage({
+          type: 'getTopMoves',
+          board: this.board,
+          color: this.turn,
+          data: { count }
+        });
+        return 'calculating'; // Indicates async calculation in progress
+      }
+      
+      // Fallback to main thread calculation
+      console.log('Using main thread for top moves calculation');
+      const moves = this.generateAllMoves(this.turn);
+      const evaluatedMoves = [];
+      
+      // Evaluate each move
+      for (const move of moves) {
+        const score = this.evaluateMove(move);
+        evaluatedMoves.push({ ...move, score });
+      }
+      
+      // Sort by score (best first)
+      evaluatedMoves.sort((a, b) => {
+        return this.turn === 'white' ? b.score - a.score : a.score - b.score;
+      });
+      
+      return evaluatedMoves.slice(0, count);
+    },
+
+    // Process results from advanced worker
+    processAdvancedHints(moves) {
+      console.log('Processing advanced hints from worker:', moves);
+      
+      if (moves.length >= 1) {
+        this.displayAdvancedHint(moves[0], 'primary');
+      }
+      if (moves.length >= 2) {
+        this.displayAdvancedHint(moves[1], 'secondary');
+      }
+      
+      // Show prediction arrows for the best move
+      if (moves.length >= 1) {
+        this.showBotPredictionsAdvanced(moves[0]);
+      }
+    },
+
+    processBotPrediction(move) {
+      if (move) {
+        console.log('Processing bot prediction:', move);
+        this.createPredictionArrow(move.from, move.to);
+      }
+    },
+
+    evaluateMove(move) {
+      // Make temporary move
+      const originalPiece = this.board[move.to.r][move.to.c];
+      const movingPiece = this.board[move.from.r][move.from.c];
+      
+      this.board[move.to.r][move.to.c] = movingPiece;
+      this.board[move.from.r][move.from.c] = null;
+      
+      // Use AI evaluation
+      const score = AI.evaluateBoard(this, this.turn);
+      
+      // Restore board
+      this.board[move.from.r][move.from.c] = movingPiece;
+      this.board[move.to.r][move.to.c] = originalPiece;
+      
+      return score;
+    },
+
+    displayAdvancedHint(move, type) {
+      const fromSquare = this.getSquareElement(move.from.r, move.from.c);
+      const toSquare = this.getSquareElement(move.to.r, move.to.c);
+      
+      if (fromSquare && toSquare) {
+        const className = type === 'primary' ? 'hint-primary' : 'hint-secondary';
+        fromSquare.classList.add(className);
+        toSquare.classList.add(className);
+        
+        console.log(`💡 ${type} hint:`, move.from, '→', move.to, 'Score:', move.score);
+      }
+    },
+
+    showBotPredictions(playerMove) {
+      if (!playerMove) return;
+      
+      console.log('🤖 Predicting bot responses...');
+      
+      // Simulate the player's move
+      const originalPiece = this.board[playerMove.to.r][playerMove.to.c];
+      const movingPiece = this.board[playerMove.from.r][playerMove.from.c];
+      
+      this.board[playerMove.to.r][playerMove.to.c] = movingPiece;
+      this.board[playerMove.from.r][playerMove.from.c] = null;
+      
+      // Get bot's best response
+      const botColor = this.turn === 'white' ? 'black' : 'white';
+      const botResponse = AI.chooseMove(this, botColor);
+      
+      // Restore board
+      this.board[playerMove.from.r][playerMove.from.c] = movingPiece;
+      this.board[playerMove.to.r][playerMove.to.c] = originalPiece;
+      
+      if (botResponse) {
+        this.createPredictionArrow(botResponse.from, botResponse.to);
+      }
+    },
+
+    // Enhanced bot predictions using advanced worker
+    showBotPredictionsAdvanced(playerMove) {
+      if (!playerMove) return;
+      
+      console.log('🤖 Predicting bot responses with advanced engine...');
+      
+      // Use advanced worker if available
+      if (AI.advancedHintWorker) {
+        AI.advancedHintWorker.postMessage({
+          type: 'getBestResponse',
+          board: this.board,
+          color: this.turn,
+          data: { playerMove }
+        });
+      } else {
+        // Fallback to simple prediction
+        this.showBotPredictions(playerMove);
+      }
+    },
+
+    createPredictionArrow(from, to) {
+      const fromSquare = this.getSquareElement(from.r, from.c);
+      const toSquare = this.getSquareElement(to.r, to.c);
+      
+      if (!fromSquare || !toSquare) return;
+      
+      const arrow = document.createElement('div');
+      arrow.className = 'prediction-arrow';
+      
+      // Calculate arrow direction
+      const deltaR = to.r - from.r;
+      const deltaC = to.c - from.c;
+      
+      let arrowChar = '➡️';
+      if (deltaR > 0 && deltaC === 0) arrowChar = '⬇️';
+      else if (deltaR < 0 && deltaC === 0) arrowChar = '⬆️';
+      else if (deltaR === 0 && deltaC > 0) arrowChar = '➡️';
+      else if (deltaR === 0 && deltaC < 0) arrowChar = '⬅️';
+      else if (deltaR > 0 && deltaC > 0) arrowChar = '↘️';
+      else if (deltaR > 0 && deltaC < 0) arrowChar = '↙️';
+      else if (deltaR < 0 && deltaC > 0) arrowChar = '↗️';
+      else if (deltaR < 0 && deltaC < 0) arrowChar = '↖️';
+      
+      arrow.textContent = arrowChar;
+      
+      // Position on the from square
+      fromSquare.style.position = 'relative';
+      fromSquare.appendChild(arrow);
+      
+      console.log('🏹 Prediction arrow:', from, '→', to);
+    },
+
+    makeBotMove() {
+      if (this.botMoveUsed) {
+        alert('Bot move already used this game! Start a new game to use it again.');
+        return;
+      }
+      
+      if (this.gameOver) {
+        alert('Game is over!');
+        return;
+      }
+      
+      console.log('🤖 Making bot move for current player...');
+      
+      const bestMove = AI.chooseMove(this, this.turn);
+      if (bestMove) {
+        this.botMoveUsed = true;
+        
+        // Update button to show used state
+        const botMoveBtn = document.getElementById('bot-move-btn');
+        botMoveBtn.disabled = true;
+        botMoveBtn.textContent = 'USED';
+        botMoveBtn.style.opacity = '0.5';
+        
+        // Make the move
+        this.movePiece(bestMove.from.r, bestMove.from.c, bestMove.to.r, bestMove.to.c);
+        
+        console.log('🎯 Bot made move:', bestMove.from, '→', bestMove.to);
+        
+        // Show notification
+        const notification = document.createElement('div');
+        notification.style.cssText = `
+          position: fixed;
+          top: 20px;
+          right: 20px;
+          background: linear-gradient(45deg, #f59e0b, #ef4444);
+          color: white;
+          padding: 15px 20px;
+          border-radius: 10px;
+          font-weight: bold;
+          z-index: 1000;
+          animation: slideIn 0.5s ease-out;
+        `;
+        notification.textContent = '🤖 Bot move executed!';
+        document.body.appendChild(notification);
+        
+        setTimeout(() => notification.remove(), 3000);
+      } else {
+        alert('No valid moves available!');
+      }
+    },
+
+    resetGame() {
+      this.board = Array(8).fill().map(() => Array(8).fill(null));
+      this.turn = 'white';
+      this.selectedSquare = null;
+      this.possibleMoves = [];
+      this.moveHistory = [];
+      this.capturedPieces = { white: [], black: [] };
+      this.check = false;
+      this.gameOver = false;
+      this.lastMove = null;
+      this.promotingPawn = null;
+      this.botMoveUsed = false; // Reset bot move availability
+      
+      // Reset bot move button
+      const botMoveBtn = document.getElementById('bot-move-btn');
+      if (botMoveBtn) {
+        botMoveBtn.disabled = false;
+        botMoveBtn.textContent = 'MAKE BOT MOVE';
+        botMoveBtn.style.opacity = '1';
+      }
+      
+      this.setupBoard();
+      this.renderBoard();
+      this.updateGameInfo();
+      this.clearHint();
     }
   };
 
