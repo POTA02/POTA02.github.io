@@ -26,3 +26,42 @@ p {
 .card p:last-child {
 	margin-bottom: 0;
 }
+
+/* Chess specific styles */
+.chess-container {
+    background-color: #f5f7fa;
+    min-height: 100vh;
+    padding-top: 2rem;
+}
+
+.board-container {
+    transition: transform 0.2s;
+}
+
+.board-container:hover {
+    transform: translateY(-2px);
+}
+
+.game-status {
+    font-size: 1.1em;
+    color: #4a5568;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+/* Add these at the end of the file */
+@media (max-width: 700px) {
+    .board {
+        width: 100% !important;
+        max-width: 400px;
+    }
+    
+    .chess-container {
+        padding: 10px;
+    }
+    
+    .card {
+        padding: 12px;
+        border-radius: 12px;
+    }
+}
