@@ -20,10 +20,74 @@
 .rank { left: 2px; top: 2px; }
 .file { right: 2px; bottom: 2px; }
 @media (max-width: 500px) { .piece { width: 90%; height: 90%; } }
+
+/* Advanced Hints CSS */
+.hint-primary {
+  background-color: #10b981 !important;
+  box-shadow: 0 0 20px rgba(16, 185, 129, 0.6);
+  border: 3px solid #059669;
+}
+
+.hint-secondary {
+  background-color: #3b82f6 !important;
+  box-shadow: 0 0 15px rgba(59, 130, 246, 0.5);
+  border: 2px solid #2563eb;
+}
+
+.prediction-arrow {
+  position: absolute;
+  pointer-events: none;
+  z-index: 10;
+  font-size: 30px;
+  color: #ef4444;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.7; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.1); }
+}
+
+.advanced-hints-button {
+  background: linear-gradient(45deg, #8b5cf6, #ec4899) !important;
+  color: white !important;
+  border: none !important;
+  box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4) !important;
+  animation: glow 2s infinite alternate;
+}
+
+@keyframes glow {
+  from { box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4); }
+  to { box-shadow: 0 6px 25px rgba(139, 92, 246, 0.8); }
+}
+
+.bot-move-button {
+  background: linear-gradient(45deg, #f59e0b, #ef4444) !important;
+  color: white !important;
+  border: none !important;
+  animation: shimmer 3s infinite;
+}
+
+.bot-move-button:disabled {
+  background: #6b7280 !important;
+  cursor: not-allowed !important;
+  animation: none !important;
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes slideIn {
+  from { transform: translateX(100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
 </style>
 </head>
 <body class="bg-gray-900 text-white min-h-screen flex flex-col items-center justify-center p-4">
-            //* RULES POPUP
+            Wenn du das siehst bist du dumm | If you see this then you're dumb
 <div id="rules-popup" style="z-index:1000;" class="fixed inset-0 flex items-center justify-center bg-gradient-to-br from-pink-500/80 via-yellow-400/80 to-blue-500/80">
   <div id="rules-popup-inner" class="transition-all duration-300 bg-white rounded-2xl shadow-2xl p-8 max-w-xs w-full border-4 border-pink-400 flex flex-col items-center relative">
     <h2 class="text-3xl font-extrabold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-pink-500 via-yellow-400 to-blue-500 animate-pulse">RULES CHANGED</h2>
@@ -105,8 +169,10 @@
 
         <div class="flex flex-col gap-2">
           <button id="new-game" class="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg transition">New Game</button>
+          <button id="advanced-hints-btn" class="advanced-hints-button py-2 px-4 rounded-lg transition font-bold hidden">ADVANCED HINTS</button>
           <button id="undo-move" class="bg-gray-600 hover:bg-gray-700 text-white py-2 px-4 rounded-lg transition">Undo Move</button>
           <button id="force-ai" class="bg-purple-600 hover:bg-purple-700 text-white py-2 px-4 rounded-lg transition">Make Computer Move</button>
+          <button id="bot-move-btn" class="bot-move-button py-2 px-4 rounded-lg transition font-bold hidden">MAKE BOT MOVE</button>
           <button id="goated-btn" class="mt-2 w-full py-2 px-4 rounded-lg font-extrabold text-lg shadow-lg transition-transform hover:scale-105 bg-gradient-to-r from-pink-500 via-yellow-400 to-blue-500 text-white border-4 border-pink-400 animate-pulse">GOATED BUTTON</button>
         </div>
 
@@ -514,6 +580,9 @@ document.addEventListener('DOMContentLoaded', function() {
     promotingPawn: null,
     vsComputer: false,
     computerSide: 'black',
+    newGameClickCount: 0, // Easter egg counter
+    advancedHintsEnabled: false,
+    botMoveUsed: false, // Track if the one-time bot move has been used
 
     init() {
       this.setupBoard();
@@ -698,8 +767,15 @@ document.addEventListener('DOMContentLoaded', function() {
       });
 
       document.getElementById('new-game').addEventListener('click', () => {
-        this.resetGame();
-        this.maybeAIMove(true);
+        this.newGameClickCount++;
+        console.log('New game clicked:', this.newGameClickCount, 'times');
+        
+        if (this.newGameClickCount >= 5 && !this.advancedHintsEnabled) {
+          this.enableAdvancedHints();
+        } else {
+          this.resetGame();
+          this.maybeAIMove(true);
+        }
       });
 
       document.getElementById('undo-move').addEventListener('click', () => {
@@ -1047,6 +1123,338 @@ document.addEventListener('DOMContentLoaded', function() {
           this.completePromotion('queen');
         }
       }, force ? 150 : 250);
+    },
+
+    // Advanced Hints Feature
+    enableAdvancedHints() {
+      console.log('🚀 Advanced Hints Mode Activated!');
+      this.advancedHintsEnabled = true;
+      
+      // Replace new game button with advanced hints button
+      const newGameBtn = document.getElementById('new-game');
+      const advancedHintsBtn = document.getElementById('advanced-hints-btn');
+      const botMoveBtn = document.getElementById('bot-move-btn');
+      
+      newGameBtn.style.display = 'none';
+      advancedHintsBtn.classList.remove('hidden');
+      botMoveBtn.classList.remove('hidden');
+      
+      // Add event listeners
+      advancedHintsBtn.addEventListener('click', () => this.showAdvancedHints());
+      botMoveBtn.addEventListener('click', () => this.makeBotMove());
+      
+      // Show notification
+      this.showAdvancedHintsNotification();
+      
+      // Reset game
+      this.resetGame();
+      this.maybeAIMove(true);
+    },
+
+    showAdvancedHintsNotification() {
+      // Create notification element
+      const notification = document.createElement('div');
+      notification.style.cssText = `
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: linear-gradient(45deg, #8b5cf6, #ec4899);
+        color: white;
+        padding: 20px 30px;
+        border-radius: 15px;
+        font-size: 18px;
+        font-weight: bold;
+        text-align: center;
+        z-index: 1000;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        animation: bounce 0.5s ease-out;
+      `;
+      notification.innerHTML = `
+        🎉 ADVANCED HINTS UNLOCKED! 🎉<br>
+        <small style="font-size: 14px; opacity: 0.9;">
+          • Top 2 move suggestions<br>
+          • Bot move predictions<br>
+          • One-time bot move control
+        </small>
+      `;
+      
+      document.body.appendChild(notification);
+      
+      // Remove after 4 seconds
+      setTimeout(() => {
+        notification.style.animation = 'fadeOut 0.5s ease-out';
+        setTimeout(() => notification.remove(), 500);
+      }, 4000);
+      
+      // Add CSS for animations
+      const style = document.createElement('style');
+      style.textContent = `
+        @keyframes bounce {
+          0% { transform: translate(-50%, -50%) scale(0.3); opacity: 0; }
+          50% { transform: translate(-50%, -50%) scale(1.05); }
+          100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+        }
+        @keyframes fadeOut {
+          to { opacity: 0; transform: translate(-50%, -50%) scale(0.95); }
+        }
+      `;
+      document.head.appendChild(style);
+    },
+
+    showAdvancedHints() {
+      console.log('🔮 Advanced Hints requested');
+      if (this.gameOver) {
+        console.log('Game is over, not showing hints');
+        return;
+      }
+      
+      // Clear existing hints
+      this.clearHints();
+      
+      // Get top 2 moves using simple AI evaluation
+      const topMoves = this.getTopMoves(2);
+      
+      if (topMoves.length >= 1) {
+        this.displayAdvancedHint(topMoves[0], 'primary');
+      }
+      if (topMoves.length >= 2) {
+        this.displayAdvancedHint(topMoves[1], 'secondary');
+      }
+      
+      // Show prediction arrows for potential bot responses
+      if (topMoves.length >= 1) {
+        this.showBotPredictions(topMoves[0]);
+      }
+    },
+
+    getTopMoves(count = 2) {
+      console.log('Calculating top', count, 'moves...');
+      const moves = this.generateAllMoves(this.turn);
+      const evaluatedMoves = [];
+      
+      // Evaluate each move using simple heuristics
+      for (const move of moves) {
+        const score = this.evaluateMove(move);
+        evaluatedMoves.push({ ...move, score });
+      }
+      
+      // Sort by score (best first)
+      evaluatedMoves.sort((a, b) => {
+        return this.turn === 'white' ? b.score - a.score : a.score - b.score;
+      });
+      
+      return evaluatedMoves.slice(0, count);
+    },
+
+    evaluateMove(move) {
+      // Simple move evaluation
+      let score = 0;
+      
+      // Capture bonus
+      if (this.board[move.to.r][move.to.c]) {
+        const capturedPiece = this.board[move.to.r][move.to.c];
+        const pieceValues = { pawn: 100, knight: 300, bishop: 300, rook: 500, queen: 900, king: 10000 };
+        score += pieceValues[capturedPiece.type] || 0;
+      }
+      
+      // Center control bonus
+      const centerDistance = Math.abs(move.to.r - 3.5) + Math.abs(move.to.c - 3.5);
+      score += (7 - centerDistance) * 10;
+      
+      // Random factor for variety
+      score += Math.random() * 50;
+      
+      return score;
+    },
+
+    generateAllMoves(color) {
+      const moves = [];
+      for (let r = 0; r < 8; r++) {
+        for (let c = 0; c < 8; c++) {
+          const piece = this.board[r][c];
+          if (piece && piece.color === color) {
+            const pieceMoves = this.calculatePossibleMoves(r, c);
+            for (const [toR, toC] of pieceMoves) {
+              moves.push({ from: { r, c }, to: { r: toR, c: toC }, piece });
+            }
+          }
+        }
+      }
+      return moves;
+    },
+
+    displayAdvancedHint(move, type) {
+      const fromSquare = this.getSquareElement(move.from.r, move.from.c);
+      const toSquare = this.getSquareElement(move.to.r, move.to.c);
+      
+      if (fromSquare && toSquare) {
+        const className = type === 'primary' ? 'hint-primary' : 'hint-secondary';
+        fromSquare.classList.add(className);
+        toSquare.classList.add(className);
+        
+        console.log(`💡 ${type} hint:`, move.from, '→', move.to, 'Score:', move.score);
+      }
+    },
+
+    showBotPredictions(playerMove) {
+      if (!playerMove) return;
+      
+      console.log('🤖 Predicting bot responses...');
+      
+      // Simulate the player's move
+      const originalPiece = this.board[playerMove.to.r][playerMove.to.c];
+      const movingPiece = this.board[playerMove.from.r][playerMove.from.c];
+      
+      this.board[playerMove.to.r][playerMove.to.c] = movingPiece;
+      this.board[playerMove.from.r][playerMove.from.c] = null;
+      
+      // Get bot's best response
+      const botColor = this.turn === 'white' ? 'black' : 'white';
+      const botMoves = this.generateAllMoves(botColor);
+      
+      if (botMoves.length > 0) {
+        // Pick a good move for the bot
+        const bestBotMove = botMoves[Math.floor(Math.random() * Math.min(3, botMoves.length))];
+        this.createPredictionArrow(bestBotMove.from, bestBotMove.to);
+      }
+      
+      // Restore board
+      this.board[playerMove.from.r][playerMove.from.c] = movingPiece;
+      this.board[playerMove.to.r][playerMove.to.c] = originalPiece;
+    },
+
+    createPredictionArrow(from, to) {
+      const fromSquare = this.getSquareElement(from.r, from.c);
+      const toSquare = this.getSquareElement(to.r, to.c);
+      
+      if (!fromSquare || !toSquare) return;
+      
+      const arrow = document.createElement('div');
+      arrow.className = 'prediction-arrow';
+      
+      // Calculate arrow direction
+      const deltaR = to.r - from.r;
+      const deltaC = to.c - from.c;
+      
+      let arrowChar = '➡️';
+      if (deltaR > 0 && deltaC === 0) arrowChar = '⬇️';
+      else if (deltaR < 0 && deltaC === 0) arrowChar = '⬆️';
+      else if (deltaR === 0 && deltaC > 0) arrowChar = '➡️';
+      else if (deltaR === 0 && deltaC < 0) arrowChar = '⬅️';
+      else if (deltaR > 0 && deltaC > 0) arrowChar = '↘️';
+      else if (deltaR > 0 && deltaC < 0) arrowChar = '↙️';
+      else if (deltaR < 0 && deltaC > 0) arrowChar = '↗️';
+      else if (deltaR < 0 && deltaC < 0) arrowChar = '↖️';
+      
+      arrow.textContent = arrowChar;
+      
+      // Position on the from square
+      fromSquare.style.position = 'relative';
+      fromSquare.appendChild(arrow);
+      
+      console.log('🏹 Prediction arrow:', from, '→', to);
+    },
+
+    makeBotMove() {
+      if (this.botMoveUsed) {
+        alert('Bot move already used this game! Start a new game to use it again.');
+        return;
+      }
+      
+      if (this.gameOver) {
+        alert('Game is over!');
+        return;
+      }
+      
+      console.log('🤖 Making bot move for current player...');
+      
+      const allMoves = this.generateAllMoves(this.turn);
+      if (allMoves.length > 0) {
+        // Pick the best move
+        const bestMove = this.getTopMoves(1)[0];
+        this.botMoveUsed = true;
+        
+        // Update button to show used state
+        const botMoveBtn = document.getElementById('bot-move-btn');
+        botMoveBtn.disabled = true;
+        botMoveBtn.textContent = 'USED';
+        botMoveBtn.style.opacity = '0.5';
+        
+        // Make the move
+        this.movePiece(bestMove.from.r, bestMove.from.c, bestMove.to.r, bestMove.to.c);
+        
+        console.log('🎯 Bot made move:', bestMove.from, '→', bestMove.to);
+        
+        // Show notification
+        const notification = document.createElement('div');
+        notification.style.cssText = `
+          position: fixed;
+          top: 20px;
+          right: 20px;
+          background: linear-gradient(45deg, #f59e0b, #ef4444);
+          color: white;
+          padding: 15px 20px;
+          border-radius: 10px;
+          font-weight: bold;
+          z-index: 1000;
+          animation: slideIn 0.5s ease-out;
+        `;
+        notification.textContent = '🤖 Bot move executed!';
+        document.body.appendChild(notification);
+        
+        setTimeout(() => notification.remove(), 3000);
+      } else {
+        alert('No valid moves available!');
+      }
+    },
+
+    clearHints() {
+      // Clear regular hints
+      document.querySelectorAll('.highlight').forEach(square => {
+        square.classList.remove('highlight');
+      });
+      
+      // Clear advanced hints
+      document.querySelectorAll('.hint-primary, .hint-secondary').forEach(square => {
+        square.classList.remove('hint-primary', 'hint-secondary');
+      });
+      
+      // Clear prediction arrows
+      document.querySelectorAll('.prediction-arrow').forEach(arrow => {
+        arrow.remove();
+      });
+    },
+
+    getSquareElement(row, col) {
+      return document.querySelector(`.square[data-row="${row}"][data-col="${col}"]`);
+    },
+
+    resetGame() {
+      this.board = Array(8).fill().map(() => Array(8).fill(null));
+      this.turn = 'white';
+      this.selectedSquare = null;
+      this.possibleMoves = [];
+      this.moveHistory = [];
+      this.capturedPieces = { white: [], black: [] };
+      this.check = false;
+      this.gameOver = false;
+      this.lastMove = null;
+      this.promotingPawn = null;
+      this.botMoveUsed = false; // Reset bot move availability
+      
+      // Reset bot move button
+      const botMoveBtn = document.getElementById('bot-move-btn');
+      if (botMoveBtn) {
+        botMoveBtn.disabled = false;
+        botMoveBtn.textContent = 'MAKE BOT MOVE';
+        botMoveBtn.style.opacity = '1';
+      }
+      
+      this.setupBoard();
+      this.renderBoard();
+      this.updateGameInfo();
+      this.clearHints();
     }
   };
 
