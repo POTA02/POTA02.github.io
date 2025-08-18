@@ -33,19 +33,20 @@
     </ul>
     <div id="reason-text" class="overflow-hidden transition-all duration-300 h-0 text-center text-purple-700 font-bold text-lg mb-2"></div>
     <div class="flex gap-4 mt-2">
-      <button id="rules-ok" class="bg-gradient-to-r from-green-400 via-blue-500 to-purple-500 text-white font-bold px-4 py-2 rounded-lg shadow hover:scale-105 transition-transform">OK, close</button>
+      <button id="merged-close" class="bg-gradient-to-r from-green-400 via-yellow-400 to-blue-500 text-white font-bold px-4 py-2 rounded-lg shadow hover:scale-105 transition-transform">CLOSE</button>
       <button id="rules-reason" class="bg-gradient-to-r from-yellow-400 via-pink-500 to-red-500 text-white font-bold px-4 py-2 rounded-lg shadow hover:scale-105 transition-transform">REASON</button>
     </div>
   </div>
 </div>
 
 <!-- BETA ROLLING TEXT POPUP -->
-<div id="beta-popup" style="z-index:999; display:none;" class="fixed inset-0 flex items-center justify-center bg-gradient-to-br from-blue-400/80 via-pink-400/80 to-yellow-300/80">
-  <div class="rounded-2xl shadow-2xl p-8 max-w-md w-full border-4 border-blue-400 flex flex-col items-center relative bg-white/90">
+<div id="beta-popup" style="z-index:999; display:none;" class="fixed inset-0 flex items-center justify-center bg-black/60">
+  <div class="rounded-2xl shadow-2xl p-8 max-w-md w-full border-4 border-blue-400 flex flex-col items-center relative bg-gradient-to-br from-blue-400/80 via-pink-400/80 to-yellow-300/80">
     <div class="w-full overflow-hidden h-12 flex items-center justify-center mb-2">
       <div id="rolling-text" class="whitespace-nowrap text-2xl md:text-3xl font-extrabold bg-gradient-to-r from-pink-500 via-yellow-400 to-blue-500 bg-clip-text text-transparent animate-rolling">THIS IS A BETA RELEASE</div>
     </div>
     <div class="text-sm text-gray-700 font-semibold text-center mt-2 animate-pulse">some features may not work due to instability.</div>
+    <button id="merged-close-beta" class="mt-6 px-6 py-2 rounded-lg font-bold text-lg shadow-lg bg-gradient-to-r from-green-400 via-yellow-400 to-blue-500 text-white border-4 border-blue-400 hover:scale-105 transition-transform">CLOSE</button>
   </div>
 </div>
 
@@ -146,12 +147,13 @@
 document.addEventListener('DOMContentLoaded', function() {
   // --- RULES CHANGED POPUP LOGIC ---
   const rulesPopup = document.getElementById('rules-popup');
-  const rulesOk = document.getElementById('rules-ok');
   const rulesReason = document.getElementById('rules-reason');
   const reasonText = document.getElementById('reason-text');
   const rulesPopupInner = document.getElementById('rules-popup-inner');
   const betaPopup = document.getElementById('beta-popup');
   const rollingText = document.getElementById('rolling-text');
+  const mergedClose = document.getElementById('merged-close');
+  const mergedCloseBeta = document.getElementById('merged-close-beta');
   let reasonShown = false;
 
   // GOATED BUTTON: change background to colorful gradient
@@ -179,18 +181,75 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   rulesReason.addEventListener('click', showReason);
-  rulesOk.addEventListener('click', function() {
-    rulesPopup.style.display = 'none';
-    // Show beta popup
-    betaPopup.style.display = 'flex';
-    // Start rolling text animation
-    rollingText.classList.remove('animate-rolling');
-    void rollingText.offsetWidth; // force reflow
-    rollingText.classList.add('animate-rolling');
-    setTimeout(function() {
+  
+  function showBetaVersion(container, text) {
+    const originalHeight = container.clientHeight;
+    const originalText = text.textContent;
+    
+    // Add height and change text
+    container.style.height = (originalHeight + 80) + 'px';
+    text.textContent = "This Is a Beta 1.2 Release";
+    text.style.fontSize = '2rem';
+    text.classList.add('font-extrabold');
+    
+    // Add text at the bottom
+    const bottomText = document.createElement('div');
+    bottomText.textContent = "I don't know why, try again";
+    bottomText.className = "text-red-500 font-bold text-sm mt-4 animate-pulse";
+    container.appendChild(bottomText);
+    
+    // Wait 2 seconds and then close
+    return new Promise(resolve => {
+      setTimeout(() => {
+        container.removeChild(bottomText); // Clean up
+        resolve();
+      }, 2000);
+    });
+  }
+  
+  if (mergedClose) {
+    mergedClose.addEventListener('click', function() {
+      const container = rulesPopupInner;
+      const text = container.querySelector('h2');
+      
+      showBetaVersion(container, text).then(() => {
+        // Close both popups if visible
+        if (rulesPopup) rulesPopup.style.display = 'none';
+        if (betaPopup) betaPopup.style.display = 'none';
+      });
+    });
+  }
+  
+  if (mergedCloseBeta) {
+    mergedCloseBeta.addEventListener('click', function() {
+      const container = betaPopup.querySelector('.rounded-2xl');
+      const text = rollingText;
+      
+      showBetaVersion(container, text).then(() => {
+        if (rulesPopup) rulesPopup.style.display = 'none';
+        if (betaPopup) betaPopup.style.display = 'none';
+      });
+    });
+  }
+  // Show beta popup after rules
+  if (mergedClose) {
+    rulesPopup.addEventListener('transitionend', function() {
+      if (rulesPopup.style.display === 'none') {
+        betaPopup.style.display = 'flex';
+        rollingText.classList.remove('animate-rolling');
+        void rollingText.offsetWidth;
+        rollingText.classList.add('animate-rolling');
+      }
+    });
+  }
+
+  // Beta popup close button
+  const betaClose = document.getElementById('beta-close');
+  if (betaClose) {
+    betaClose.addEventListener('click', function() {
       betaPopup.style.display = 'none';
-    }, 5000);
-  });
+    });
+  }
 
   // Prevent game interaction until popups are closed
   document.body.classList.add('overflow-hidden');
