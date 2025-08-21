@@ -90,110 +90,9 @@
                 height: 90%;
             }
         }
-
-        /* Advanced Hints CSS */
-        .hint-primary {
-            background-color: #10b981 !important;
-            box-shadow: 0 0 20px rgba(16, 185, 129, 0.6);
-            border: 3px solid #059669;
-        }
-
-        .hint-secondary {
-            background-color: #3b82f6 !important;
-            box-shadow: 0 0 15px rgba(59, 130, 246, 0.5);
-            border: 2px solid #2563eb;
-        }
-
-        .prediction-arrow {
-            position: absolute;
-            pointer-events: none;
-            z-index: 10;
-            font-size: 30px;
-            color: #ef4444;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 0.7; transform: scale(1); }
-            50% { opacity: 1; transform: scale(1.1); }
-        }
-
-        .advanced-hints-button {
-            background: linear-gradient(45deg, #8b5cf6, #ec4899) !important;
-            color: white !important;
-            border: none !important;
-            box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4) !important;
-            animation: glow 2s infinite alternate;
-        }
-
-        @keyframes glow {
-            from { box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4); }
-            to { box-shadow: 0 6px 25px rgba(139, 92, 246, 0.8); }
-        }
-
-        .bot-move-button {
-            background: linear-gradient(45deg, #f59e0b, #ef4444) !important;
-            color: white !important;
-            border: none !important;
-            animation: shimmer 3s infinite;
-        }
-
-        .bot-move-button:disabled {
-            background: #6b7280 !important;
-            cursor: not-allowed !important;
-            animation: none !important;
-        }
-
-        @keyframes shimmer {
-            0% { background-position: -200% 0; }
-            100% { background-position: 200% 0; }
-        }
-
-        @keyframes slideIn {
-            from { transform: translateX(100%); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
-        }
     </style>
 </head>
 <body class="bg-gray-900 text-white min-h-screen flex flex-col items-center justify-center p-4">
-    <!-- RULES POPUP -->
-    <div id="rules-popup" style="z-index:1000;" class="fixed inset-0 flex items-center justify-center bg-gradient-to-br from-pink-500/80 via-yellow-400/80 to-blue-500/80">
-        <div id="rules-popup-inner" class="transition-all duration-300 bg-white rounded-2xl shadow-2xl p-8 max-w-xs w-full border-4 border-pink-400 flex flex-col items-center relative">
-            <h2 class="text-3xl font-extrabold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-pink-500 via-yellow-400 to-blue-500 animate-pulse">RULES CHANGED</h2>
-            <ul class="text-lg font-semibold text-gray-800 mb-4 space-y-2">
-                <li><span class="font-bold text-pink-600">-</span> <span class="text-blue-600">Removed Castling</span></li>
-                <li><span class="font-bold text-pink-600">-</span> <span class="text-yellow-600">Removed En passant</span></li>
-            </ul>
-            <div id="reason-text" class="overflow-hidden transition-all duration-300 h-0 text-center text-purple-700 font-bold text-lg mb-2"></div>
-            <div class="flex gap-4 mt-2">
-                <button id="merged-close" class="bg-gradient-to-r from-green-400 via-yellow-400 to-blue-500 text-white font-bold px-4 py-2 rounded-lg shadow hover:scale-105 transition-transform">CLOSE</button>
-                <button id="rules-reason" class="bg-gradient-to-r from-yellow-400 via-pink-500 to-red-500 text-white font-bold px-4 py-2 rounded-lg shadow hover:scale-105 transition-transform">REASON</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- BETA ROLLING TEXT POPUP -->
-    <div id="beta-popup" style="z-index:999; display:none;" class="fixed inset-0 flex items-center justify-center bg-black/60">
-        <div class="rounded-2xl shadow-2xl p-8 max-w-md w-full border-4 border-blue-400 flex flex-col items-center relative bg-gradient-to-br from-blue-400/80 via-pink-400/80 to-yellow-300/80">
-            <div class="w-full overflow-hidden h-12 flex items-center justify-center mb-2">
-                <div id="rolling-text" class="whitespace-nowrap text-2xl md:text-3xl font-extrabold bg-gradient-to-r from-pink-500 via-yellow-400 to-blue-500 bg-clip-text text-transparent animate-rolling">THIS IS A BETA RELEASE</div>
-            </div>
-            <div class="text-sm text-gray-700 font-semibold text-center mt-2 animate-pulse">some features may not work due to instability.</div>
-            <button id="merged-close-beta" class="mt-6 px-6 py-2 rounded-lg font-bold text-lg shadow-lg bg-gradient-to-r from-green-400 via-yellow-400 to-blue-500 text-white border-4 border-blue-400 hover:scale-105 transition-transform">CLOSE</button>
-        </div>
-    </div>
-
-    <style>
-        @keyframes rolling {
-            0% { transform: translateX(100%); }
-            100% { transform: translateX(-100%); }
-        }
-        .animate-rolling {
-            animation: rolling 5s linear 1;
-        }
-    </style>
-    
     <div class="max-w-4xl w-full">
         
         
@@ -232,15 +131,15 @@
                         <button id="new-game" class="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg transition">
                             New Game
                         </button>
-                        <button id="advanced-hints-btn" class="advanced-hints-button py-2 px-4 rounded-lg transition font-bold hidden">ADVANCED HINTS</button>
                         <button id="undo-move" class="bg-gray-600 hover:bg-gray-700 text-white py-2 px-4 rounded-lg transition">
                             Undo Move(im dumb)
+                        </button>
+                        <button id="hint-button" class="bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded-lg transition">
+                            Get Hint
                         </button>
                         <button id="share-pieces" class="bg-purple-600 hover:bg-purple-700 text-white py-2 px-4 rounded-lg transition">
                             SHARE PIECES
                         </button>
-                        <button id="bot-move-btn" class="bot-move-button py-2 px-4 rounded-lg transition font-bold hidden">MAKE BOT MOVE</button>
-                            <button id="goated-btn" class="mt-2 w-full py-2 px-4 rounded-lg font-extrabold text-lg shadow-lg transition-transform hover:scale-105 bg-gradient-to-r from-pink-500 via-yellow-400 to-blue-500 text-white border-4 border-pink-400 animate-pulse">GOATED BUTTON</button>
                     </div>
                     
                     <div class="mt-4">
@@ -286,104 +185,6 @@
     </div>
 
     <script>
-        // Beta popup logic
-        document.addEventListener('DOMContentLoaded', function() {
-            const rulesPopup = document.getElementById('rules-popup');
-            const rulesReason = document.getElementById('rules-reason');
-            const reasonText = document.getElementById('reason-text');
-            const rulesPopupInner = document.getElementById('rules-popup-inner');
-            const betaPopup = document.getElementById('beta-popup');
-            const rollingText = document.getElementById('rolling-text');
-            const mergedClose = document.getElementById('merged-close');
-            const mergedCloseBeta = document.getElementById('merged-close-beta');
-            let reasonShown = false;
-            
-            function showReason() {
-                if (!reasonShown) {
-                    reasonText.textContent = 'I was too lazy.';
-                    reasonText.style.height = '2.5rem';
-                    rulesPopupInner.style.paddingBottom = '2.5rem';
-                    reasonShown = true;
-                } else {
-                    reasonText.textContent = '';
-                    reasonText.style.height = '0';
-                    rulesPopupInner.style.paddingBottom = '';
-                    reasonShown = false;
-                }
-            }
-            
-            if (rulesReason) {
-                rulesReason.addEventListener('click', showReason);
-            }
-            
-            function showBetaVersion(container, text) {
-                // Change text to beta message
-                text.textContent = "This is a beta release";
-                
-                // Wait 0.9 seconds and then close
-                return new Promise(resolve => {
-                    setTimeout(() => {
-                        resolve();
-                    }, 900);
-                });
-            }
-            
-            if (mergedClose) {
-                mergedClose.addEventListener('click', function() {
-                    const container = rulesPopupInner;
-                    const text = container.querySelector('h2');
-                    
-                    showBetaVersion(container, text).then(() => {
-                        // Close both popups if visible
-                        if (rulesPopup) rulesPopup.style.display = 'none';
-                        if (betaPopup) betaPopup.style.display = 'none';
-                    });
-                });
-            }
-            
-            if (mergedCloseBeta) {
-                mergedCloseBeta.addEventListener('click', function() {
-                    const container = betaPopup.querySelector('.rounded-2xl');
-                    const text = rollingText;
-                    
-                    showBetaVersion(container, text).then(() => {
-                        if (rulesPopup) rulesPopup.style.display = 'none';
-                        if (betaPopup) betaPopup.style.display = 'none';
-                    });
-                });
-            }
-            
-            // Show beta popup after rules
-            if (mergedClose) {
-                rulesPopup.addEventListener('transitionend', function() {
-                    if (rulesPopup.style.display === 'none') {
-                        betaPopup.style.display = 'flex';
-                        rollingText.classList.remove('animate-rolling');
-                        void rollingText.offsetWidth;
-                        rollingText.classList.add('animate-rolling');
-                    }
-                });
-            }
-            
-            // Prevent game interaction until popups are closed
-            document.body.classList.add('overflow-hidden');
-            function hidePopupsEnableGame() {
-                document.body.classList.remove('overflow-hidden');
-            }
-            // Hide popups after beta
-            betaPopup.addEventListener('transitionend', hidePopupsEnableGame);
-            
-            // GOATED BUTTON: change background to colorful gradient
-            const goatedBtn = document.getElementById('goated-btn');
-            if (goatedBtn) {
-                goatedBtn.addEventListener('click', function() {
-                    document.body.classList.remove('bg-gray-900');
-                    document.body.style.background = 'linear-gradient(135deg, #ec4899 0%, #fde047 50%, #3b82f6 100%)';
-                    document.body.style.transition = 'background 0.7s cubic-bezier(.4,2,.6,1)';
-                    goatedBtn.style.display = 'none';
-                });
-            }
-        });
         document.addEventListener('DOMContentLoaded', function() {
             // Game state
             const game = {
@@ -396,9 +197,6 @@
                 check: false,
                 gameOver: false,
                 lastMove: null,
-                newGameClickCount: 0, // Easter egg counter
-                advancedHintsEnabled: false,
-                botMoveUsed: false, // Track if the one-time bot move has been used
                 
                 init() {
                     this.setupBoard();
@@ -624,19 +422,17 @@
                     
                     // New game button
                     document.getElementById('new-game').addEventListener('click', () => {
-                        this.newGameClickCount++;
-                        console.log('New game clicked:', this.newGameClickCount, 'times');
-                        
-                        if (this.newGameClickCount >= 5 && !this.advancedHintsEnabled) {
-                            this.enableAdvancedHints();
-                        } else {
-                            this.resetGame();
-                        }
+                        this.resetGame();
                     });
                     
                     // Undo move button
                     document.getElementById('undo-move').addEventListener('click', () => {
                         this.undoMove();
+                    });
+                    
+                    // Hint button
+                    document.getElementById('hint-button').addEventListener('click', () => {
+                        this.getHint();
                     });
                     
                     // Promotion selection
@@ -1225,6 +1021,81 @@
                     this.renderBoard();
                 },
                 
+                getHint() {
+                    if (this.gameOver) {
+                        alert('Game is over!');
+                        return;
+                    }
+                    
+                    // Find all possible moves for current player
+                    const allMoves = [];
+                    
+                    for (let row = 0; row < 8; row++) {
+                        for (let col = 0; col < 8; col++) {
+                            const piece = this.board[row][col];
+                            if (piece && piece.color === this.turn) {
+                                const moves = this.calculatePossibleMoves(row, col);
+                                moves.forEach(([toRow, toCol]) => {
+                                    allMoves.push({
+                                        from: [row, col],
+                                        to: [toRow, toCol],
+                                        piece: piece.type
+                                    });
+                                });
+                            }
+                        }
+                    }
+                    
+                    if (allMoves.length === 0) {
+                        alert('No legal moves available!');
+                        return;
+                    }
+                    
+                    // Simple hint: prioritize captures, then center moves
+                    let bestMove = null;
+                    let bestScore = -1000;
+                    
+                    allMoves.forEach(move => {
+                        let score = 0;
+                        const [toRow, toCol] = move.to;
+                        
+                        // Prioritize captures
+                        if (this.board[toRow][toCol]) {
+                            const capturedPiece = this.board[toRow][toCol];
+                            const pieceValues = { pawn: 1, knight: 3, bishop: 3, rook: 5, queen: 9, king: 100 };
+                            score += pieceValues[capturedPiece.type] || 0;
+                        }
+                        
+                        // Slightly favor center squares
+                        const centerDistance = Math.abs(3.5 - toRow) + Math.abs(3.5 - toCol);
+                        score += (7 - centerDistance) * 0.1;
+                        
+                        // Add some randomness
+                        score += Math.random() * 0.5;
+                        
+                        if (score > bestScore) {
+                            bestScore = score;
+                            bestMove = move;
+                        }
+                    });
+                    
+                    if (bestMove) {
+                        const [fromRow, fromCol] = bestMove.from;
+                        const [toRow, toCol] = bestMove.to;
+                        
+                        // Clear any existing selection
+                        this.clearSelection();
+                        
+                        // Select the piece
+                        this.selectSquare(fromRow, fromCol);
+                        
+                        // Show hint message
+                        const fromSquare = String.fromCharCode(97 + fromCol) + (8 - fromRow);
+                        const toSquare = String.fromCharCode(97 + toCol) + (8 - toRow);
+                        alert(`Hint: Move ${bestMove.piece} from ${fromSquare} to ${toSquare}`);
+                    }
+                },
+                
                 resetGame() {
                     // Reset board
                     this.board = Array(8).fill().map(() => Array(8).fill(null));
@@ -1273,336 +1144,6 @@
                     } else {
                         kingSquare.classList.remove('king-in-check');
                     }
-                },
-
-                // Advanced Hints Feature
-                enableAdvancedHints() {
-                    console.log('🚀 Advanced Hints Mode Activated!');
-                    this.advancedHintsEnabled = true;
-                    
-                    // Replace new game button with advanced hints button
-                    const newGameBtn = document.getElementById('new-game');
-                    const advancedHintsBtn = document.getElementById('advanced-hints-btn');
-                    const botMoveBtn = document.getElementById('bot-move-btn');
-                    
-                    newGameBtn.style.display = 'none';
-                    advancedHintsBtn.classList.remove('hidden');
-                    botMoveBtn.classList.remove('hidden');
-                    
-                    // Add event listeners
-                    advancedHintsBtn.addEventListener('click', () => this.showAdvancedHints());
-                    botMoveBtn.addEventListener('click', () => this.makeBotMove());
-                    
-                    // Show notification
-                    this.showAdvancedHintsNotification();
-                    
-                    // Reset game
-                    this.resetGame();
-                },
-
-                showAdvancedHintsNotification() {
-                    // Create notification element
-                    const notification = document.createElement('div');
-                    notification.style.cssText = `
-                        position: fixed;
-                        top: 50%;
-                        left: 50%;
-                        transform: translate(-50%, -50%);
-                        background: linear-gradient(45deg, #8b5cf6, #ec4899);
-                        color: white;
-                        padding: 20px 30px;
-                        border-radius: 15px;
-                        font-size: 18px;
-                        font-weight: bold;
-                        text-align: center;
-                        z-index: 1000;
-                        box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-                        animation: bounce 0.5s ease-out;
-                    `;
-                    notification.innerHTML = `
-                        🎉 ADVANCED HINTS UNLOCKED! 🎉<br>
-                        <small style="font-size: 14px; opacity: 0.9;">
-                            • Top 2 move suggestions<br>
-                            • Bot move predictions<br>
-                            • One-time bot move control
-                        </small>
-                    `;
-                    
-                    document.body.appendChild(notification);
-                    
-                    // Remove after 4 seconds
-                    setTimeout(() => {
-                        notification.style.animation = 'fadeOut 0.5s ease-out';
-                        setTimeout(() => notification.remove(), 500);
-                    }, 4000);
-                    
-                    // Add CSS for animations
-                    const style = document.createElement('style');
-                    style.textContent = `
-                        @keyframes bounce {
-                            0% { transform: translate(-50%, -50%) scale(0.3); opacity: 0; }
-                            50% { transform: translate(-50%, -50%) scale(1.05); }
-                            100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
-                        }
-                        @keyframes fadeOut {
-                            to { opacity: 0; transform: translate(-50%, -50%) scale(0.95); }
-                        }
-                    `;
-                    document.head.appendChild(style);
-                },
-
-                showAdvancedHints() {
-                    console.log('🔮 Advanced Hints requested');
-                    if (this.gameOver) {
-                        console.log('Game is over, not showing hints');
-                        return;
-                    }
-                    
-                    // Clear existing hints
-                    this.clearHints();
-                    
-                    // Get top 2 moves using simple AI evaluation
-                    const topMoves = this.getTopMoves(2);
-                    
-                    if (topMoves.length >= 1) {
-                        this.displayAdvancedHint(topMoves[0], 'primary');
-                    }
-                    if (topMoves.length >= 2) {
-                        this.displayAdvancedHint(topMoves[1], 'secondary');
-                    }
-                    
-                    // Show prediction arrows for potential bot responses
-                    if (topMoves.length >= 1) {
-                        this.showBotPredictions(topMoves[0]);
-                    }
-                },
-
-                getTopMoves(count = 2) {
-                    console.log('Calculating top', count, 'moves...');
-                    const moves = this.generateAllMoves(this.turn);
-                    const evaluatedMoves = [];
-                    
-                    // Evaluate each move using simple heuristics
-                    for (const move of moves) {
-                        const score = this.evaluateMove(move);
-                        evaluatedMoves.push({ ...move, score });
-                    }
-                    
-                    // Sort by score (best first)
-                    evaluatedMoves.sort((a, b) => {
-                        return this.turn === 'white' ? b.score - a.score : a.score - b.score;
-                    });
-                    
-                    return evaluatedMoves.slice(0, count);
-                },
-
-                evaluateMove(move) {
-                    // Simple move evaluation
-                    let score = 0;
-                    
-                    // Capture bonus
-                    if (this.board[move.to.r][move.to.c]) {
-                        const capturedPiece = this.board[move.to.r][move.to.c];
-                        const pieceValues = { pawn: 100, knight: 300, bishop: 300, rook: 500, queen: 900, king: 10000 };
-                        score += pieceValues[capturedPiece.type] || 0;
-                    }
-                    
-                    // Center control bonus
-                    const centerDistance = Math.abs(move.to.r - 3.5) + Math.abs(move.to.c - 3.5);
-                    score += (7 - centerDistance) * 10;
-                    
-                    // Random factor for variety
-                    score += Math.random() * 50;
-                    
-                    return score;
-                },
-
-                generateAllMoves(color) {
-                    const moves = [];
-                    for (let r = 0; r < 8; r++) {
-                        for (let c = 0; c < 8; c++) {
-                            const piece = this.board[r][c];
-                            if (piece && piece.color === color) {
-                                const pieceMoves = this.calculatePossibleMoves(r, c);
-                                for (const [toR, toC] of pieceMoves) {
-                                    moves.push({ from: { r, c }, to: { r: toR, c: toC }, piece });
-                                }
-                            }
-                        }
-                    }
-                    return moves;
-                },
-
-                displayAdvancedHint(move, type) {
-                    const fromSquare = this.getSquareElement(move.from.r, move.from.c);
-                    const toSquare = this.getSquareElement(move.to.r, move.to.c);
-                    
-                    if (fromSquare && toSquare) {
-                        const className = type === 'primary' ? 'hint-primary' : 'hint-secondary';
-                        fromSquare.classList.add(className);
-                        toSquare.classList.add(className);
-                        
-                        console.log(`💡 ${type} hint:`, move.from, '→', move.to, 'Score:', move.score);
-                    }
-                },
-
-                showBotPredictions(playerMove) {
-                    if (!playerMove) return;
-                    
-                    console.log('🤖 Predicting bot responses...');
-                    
-                    // Simulate the player's move
-                    const originalPiece = this.board[playerMove.to.r][playerMove.to.c];
-                    const movingPiece = this.board[playerMove.from.r][playerMove.from.c];
-                    
-                    this.board[playerMove.to.r][playerMove.to.c] = movingPiece;
-                    this.board[playerMove.from.r][playerMove.from.c] = null;
-                    
-                    // Get bot's best response
-                    const botColor = this.turn === 'white' ? 'black' : 'white';
-                    const botMoves = this.generateAllMoves(botColor);
-                    
-                    if (botMoves.length > 0) {
-                        // Pick a good move for the bot
-                        const bestBotMove = botMoves[Math.floor(Math.random() * Math.min(3, botMoves.length))];
-                        this.createPredictionArrow(bestBotMove.from, bestBotMove.to);
-                    }
-                    
-                    // Restore board
-                    this.board[playerMove.from.r][playerMove.from.c] = movingPiece;
-                    this.board[playerMove.to.r][playerMove.to.c] = originalPiece;
-                },
-
-                createPredictionArrow(from, to) {
-                    const fromSquare = this.getSquareElement(from.r, from.c);
-                    const toSquare = this.getSquareElement(to.r, to.c);
-                    
-                    if (!fromSquare || !toSquare) return;
-                    
-                    const arrow = document.createElement('div');
-                    arrow.className = 'prediction-arrow';
-                    
-                    // Calculate arrow direction
-                    const deltaR = to.r - from.r;
-                    const deltaC = to.c - from.c;
-                    
-                    let arrowChar = '➡️';
-                    if (deltaR > 0 && deltaC === 0) arrowChar = '⬇️';
-                    else if (deltaR < 0 && deltaC === 0) arrowChar = '⬆️';
-                    else if (deltaR === 0 && deltaC > 0) arrowChar = '➡️';
-                    else if (deltaR === 0 && deltaC < 0) arrowChar = '⬅️';
-                    else if (deltaR > 0 && deltaC > 0) arrowChar = '↘️';
-                    else if (deltaR > 0 && deltaC < 0) arrowChar = '↙️';
-                    else if (deltaR < 0 && deltaC > 0) arrowChar = '↗️';
-                    else if (deltaR < 0 && deltaC < 0) arrowChar = '↖️';
-                    
-                    arrow.textContent = arrowChar;
-                    
-                    // Position on the from square
-                    fromSquare.style.position = 'relative';
-                    fromSquare.appendChild(arrow);
-                    
-                    console.log('🏹 Prediction arrow:', from, '→', to);
-                },
-
-                makeBotMove() {
-                    if (this.botMoveUsed) {
-                        alert('Bot move already used this game! Start a new game to use it again.');
-                        return;
-                    }
-                    
-                    if (this.gameOver) {
-                        alert('Game is over!');
-                        return;
-                    }
-                    
-                    console.log('🤖 Making bot move for current player...');
-                    
-                    const allMoves = this.generateAllMoves(this.turn);
-                    if (allMoves.length > 0) {
-                        // Pick the best move
-                        const bestMove = this.getTopMoves(1)[0];
-                        this.botMoveUsed = true;
-                        
-                        // Update button to show used state
-                        const botMoveBtn = document.getElementById('bot-move-btn');
-                        botMoveBtn.disabled = true;
-                        botMoveBtn.textContent = 'USED';
-                        botMoveBtn.style.opacity = '0.5';
-                        
-                        // Make the move
-                        this.movePiece(bestMove.from.r, bestMove.from.c, bestMove.to.r, bestMove.to.c);
-                        
-                        console.log('🎯 Bot made move:', bestMove.from, '→', bestMove.to);
-                        
-                        // Show notification
-                        const notification = document.createElement('div');
-                        notification.style.cssText = `
-                            position: fixed;
-                            top: 20px;
-                            right: 20px;
-                            background: linear-gradient(45deg, #f59e0b, #ef4444);
-                            color: white;
-                            padding: 15px 20px;
-                            border-radius: 10px;
-                            font-weight: bold;
-                            z-index: 1000;
-                            animation: slideIn 0.5s ease-out;
-                        `;
-                        notification.textContent = '🤖 Bot move executed!';
-                        document.body.appendChild(notification);
-                        
-                        setTimeout(() => notification.remove(), 3000);
-                    } else {
-                        alert('No valid moves available!');
-                    }
-                },
-
-                clearHints() {
-                    // Clear regular hints
-                    document.querySelectorAll('.highlight').forEach(square => {
-                        square.classList.remove('highlight');
-                    });
-                    
-                    // Clear advanced hints
-                    document.querySelectorAll('.hint-primary, .hint-secondary').forEach(square => {
-                        square.classList.remove('hint-primary', 'hint-secondary');
-                    });
-                    
-                    // Clear prediction arrows
-                    document.querySelectorAll('.prediction-arrow').forEach(arrow => {
-                        arrow.remove();
-                    });
-                },
-
-                getSquareElement(row, col) {
-                    return document.querySelector(`.square[data-row="${row}"][data-col="${col}"]`);
-                },
-
-                resetGame() {
-                    this.board = Array(8).fill().map(() => Array(8).fill(null));
-                    this.turn = 'white';
-                    this.selectedSquare = null;
-                    this.possibleMoves = [];
-                    this.moveHistory = [];
-                    this.capturedPieces = { white: [], black: [] };
-                    this.check = false;
-                    this.gameOver = false;
-                    this.lastMove = null;
-                    this.botMoveUsed = false; // Reset bot move availability
-                    
-                    // Reset bot move button
-                    const botMoveBtn = document.getElementById('bot-move-btn');
-                    if (botMoveBtn) {
-                        botMoveBtn.disabled = false;
-                        botMoveBtn.textContent = 'MAKE BOT MOVE';
-                        botMoveBtn.style.opacity = '1';
-                    }
-                    
-                    this.setupBoard();
-                    this.renderBoard();
-                    this.updateGameInfo();
-                    this.clearHints();
                 }
             };
             
@@ -1612,7 +1153,15 @@
     </script>
 <p style="border-radius: 8px; text-align: center; font-size: 12px; color: #fff; margin-top: 16px;position: fixed; left: 8px; bottom: 8px; z-index: 10; background: rgba(0, 0, 0, 0.8); padding: 4px 8px;">Made for <img src="https://www.reddit.com/r/DictatorshipChess/logo.svg" alt="DictatorshipChess Logo" style="width: 16px; height: 16px; vertical-align: middle;display:inline-block;margin-right:3px;filter:brightness(0) invert(1);"><a href="https://www.reddit.com/r/DictatorshipChess" style="color: #fff;text-decoration: underline;" target="_blank" >Google us</a> - 🧬 <a href="https://huggingface.co/spaces/anythingcultivative/chessgame" style="color: #fff;text-decoration: underline;" target="_blank" >online</a></p>
 
-
+<div id="beta-popup" class="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50">
+    <div class="bg-gray-900 rounded-xl shadow-2xl p-8 max-w-sm w-full text-center border-2 border-yellow-400">
+        <h2 class="text-2xl font-bold text-yellow-400 mb-2">This is a beta release</h2>
+        <p class="text-gray-300 mb-6 text-sm">Some features may not work due to instability.</p>
+        <button id="beta-ok" class="bg-yellow-500 hover:bg-yellow-600 text-black font-semibold py-2 px-6 rounded-lg transition">
+            OK, I understand
+        </button>
+        <img src="download.jfif" alt="Logo" width="100" height="60">
+    </div>
 </div>
 
 <script>
@@ -1624,74 +1173,4 @@
     });
 </script>
 </body>
-</html><section class="w-full max-w-2xl mx-auto mt-12 mb-4 bg-gray-800 rounded-lg shadow-lg p-6 text-center">
-        <h2 class="text-2xl font-bold text-yellow-400 mb-2">Bonus Game</h2>
-        <p class="text-gray-300 mb-4">
-            Need a break from chess? Try These!
-        </p>
-       
-        <button id="OUR REDDIT" class="bg-orange-600 hover:bg-orange-700 text-white py-2 px-4 rounded transition">
-            Reddit
-        </button>
-        <a href="https://www.reddit.com/r/DictatorshipDevelop/" target="_blank" class="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded transition inline-block ml-2">
-            Reddit
-        </a>
-
-        <button id="JOIN US" class="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded transition">
-            Reddit
-        </button>
-        <a href="https://www.reddit.com/r/DictatorshipChess/" target="_blank" class="bg-cyan-600 hover:bg-cyan-700 text-white py-2 px-4 rounded transition inline-block ml-2">
-            JOIN US
-        
-        </a>
-
-        <button id="open-flappy" class="bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded transition">
-            Play Flappy Bird
-        </button>
-    </section>
-
-    <div id="flappy-modal" class="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center hidden z-50">
-        <div class="bg-gray-900 rounded-lg shadow-xl p-4 max-w-2xl w-full relative">
-            <button id="close-flappy" class="absolute top-2 right-2 bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded">Close</button>
-            <h3 class="text-xl font-bold text-center mb-2 text-yellow-400">Flappy Bird</h3>
-            <iframe src="https://flappybird.io/" width="600" height="400" class="w-full rounded-lg border-2 border-yellow-400" style="background:#222;"></iframe>
-        </div>
-    </div>
-
-    <script>
-       
-
-        // Flappy Bird modal logic
-        document.getElementById('open-flappy').addEventListener('click', function() {
-            document.getElementById('flappy-modal').classList.remove('hidden');
-        });
-        document.getElementById('close-flappy').addEventListener('click', function() {
-            document.getElementById('flappy-modal').classList.add('hidden');
-        });
-    </script>
-<section class="w-full max-w-2xl mx-auto mt-12 mb-8 bg-gray-800 rounded-lg shadow-lg p-6 text-center">
-    <h2 class="text-2xl font-bold text-cyan-700 mb-2">HELP US IMPROVE</h2>
-    <button id="gmail-link" class="bg-lime-600 hover:bg-lime-700 text-white py-2 px-4 rounded transition mb-2">
-        Open Gmail and copy email
-    </button>
-    <div id="gmail-status" class="text-gray-300 mt-2 text-sm" style="display:none;">Wait a sec...</div>
-</section>
-
-<script>
-
-    // Gmail link logic
-    document.getElementById('gmail-link').addEventListener('click', function(e) {
-        e.preventDefault();
-        const status = document.getElementById('gmail-status');
-        status.style.display = 'block';
-        status.textContent = 'Wait a sec...';
-        setTimeout(function() {
-            // Copy email to clipboard
-            navigator.clipboard.writeText('jomama2212@outlook.com').then(function() {
-                window.location.href = 'https://mail.google.com/mail/u/0/#inbox?compose=new';
-            });
-        }, 3000);
-    });
-</script>
-
-</section>
+</html>

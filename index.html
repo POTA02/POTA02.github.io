@@ -3,131 +3,513 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CHESS GAME LAUNCHER</title>
+    <title>CHESS GAME HUB - Master Portal</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Poppins:wght@300;600&family=Press+Start+2P&family=Rubik+Mono+One&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Poppins:wght@300;600&family=Press+Start+2P&family=Rubik+Mono+One&family=Exo+2:wght@100;400;700;900&display=swap" rel="stylesheet">
     <style>
         body {
             font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 25%, #16213e 50%, #2d1b69 75%, #833ab4 100%);
             min-height: 100vh;
             overflow-x: hidden;
+            animation: bgShift 20s ease-in-out infinite;
         }
+        
+        @keyframes bgShift {
+            0%, 100% { background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 25%, #16213e 50%, #2d1b69 75%, #833ab4 100%); }
+            50% { background: linear-gradient(135deg, #833ab4 0%, #2d1b69 25%, #16213e 50%, #1a1a2e 75%, #0f0f23 100%); }
+        }
+        
         .glow-text {
-            text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+            animation: textGlow 3s ease-in-out infinite alternate;
         }
-        .side-panel {
-            transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        
+        @keyframes textGlow {
+            from { text-shadow: 0 0 20px rgba(255, 255, 255, 0.5), 0 0 30px rgba(0, 255, 255, 0.3); }
+            to { text-shadow: 0 0 30px rgba(255, 255, 255, 0.8), 0 0 40px rgba(0, 255, 255, 0.6); }
         }
-        .main-button {
-            box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+        
+        .game-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .game-card::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4, #feca57, #ff9ff3);
+            background-size: 400% 400%;
+            border-radius: inherit;
+            z-index: -1;
+            animation: borderFlow 3s ease infinite;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .game-card:hover::before {
+            opacity: 1;
+        }
+        
+        @keyframes borderFlow {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+        
+        .game-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+        
+        .category-header {
+            background: linear-gradient(45deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.05));
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .floating-icon {
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        .pulse-ring {
+            animation: pulseRing 2s cubic-bezier(0.455, 0.03, 0.515, 0.955) infinite;
+        }
+        
+        @keyframes pulseRing {
+            0% { transform: scale(0.8); opacity: 1; }
+            100% { transform: scale(1.4); opacity: 0; }
+        }
+        
+        /* Enhanced logo animations */
+        .floating-icon:hover .pulse-ring {
+            animation: pulseRing 1s cubic-bezier(0.455, 0.03, 0.515, 0.955) infinite;
+            border-color: #fbbf24;
+        }
+        
+        .floating-icon:hover i.fa-chess-king {
+            transform: scale(1.1);
+            transition: all 0.3s ease;
+            filter: drop-shadow(0 0 15px rgba(255,255,255,1)) drop-shadow(0 0 25px rgba(34, 211, 238, 0.8));
+        }
+        
+        /* Glowing effect on hover */
+        .floating-icon:hover > div > div:first-child {
+            box-shadow: 0 0 30px rgba(34, 211, 238, 0.6), 0 0 60px rgba(147, 51, 234, 0.4), 0 0 90px rgba(236, 72, 153, 0.2);
             transition: all 0.3s ease;
         }
-        .main-button:hover {
-            box-shadow: 0 0 30px rgba(0, 255, 255, 0.8);
-            transform: scale(1.05);
+        
+        /* Sparkle effect */
+        @keyframes sparkle {
+            0%, 100% { opacity: 0; transform: scale(0); }
+            50% { opacity: 1; transform: scale(1); }
         }
-        .divider {
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+        
+        .floating-icon::before,
+        .floating-icon::after {
+            content: '✨';
+            position: absolute;
+            font-size: 12px;
+            animation: sparkle 3s infinite;
+            pointer-events: none;
+            z-index: 10;
+        }
+        
+        .floating-icon::before {
+            top: 10%;
+            right: 15%;
+            animation-delay: 0s;
+        }
+        
+        .floating-icon::after {
+            bottom: 10%;
+            left: 15%;
+            animation-delay: 1.5s;
+        }
+        
+        .constellation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 3s ease-in-out infinite;
+        }
+        
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+        
+        .difficulty-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        
+        .difficulty-easy { background: linear-gradient(45deg, #4ecdc4, #44a08d); }
+        .difficulty-medium { background: linear-gradient(45deg, #feca57, #ff9ff3); }
+        .difficulty-hard { background: linear-gradient(45deg, #ff6b6b, #ee5a24); }
+        .difficulty-expert { background: linear-gradient(45deg, #833ab4, #5f27cd); }
+        
+        .feature-tag {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 2px 8px;
+            border-radius: 8px;
+            font-size: 0.6rem;
+            margin: 2px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
         }
     </style>
 </head>
-<body class="text-gray-200 font-sans">
-    <header class="py-8 text-center">
-        <h1 class="text-5xl font-bold glow-text text-cyan-400" style="font-family: 'Rubik Mono One', sans-serif; letter-spacing: -2px;">LAUNCHER</h1>
+<body class="text-white font-sans relative">
+    <!-- Constellation Background -->
+    <div class="constellation" id="constellation"></div>
+    
+    <!-- Header -->
+    <header class="py-12 text-center relative z-10">
+        <div class="floating-icon mb-6">
+            <div class="relative inline-block">
+                <!-- Outer glowing ring -->
+                <div class="pulse-ring absolute inset-0 border-4 border-cyan-400 rounded-full"></div>
+                <!-- Middle ring -->
+                <div class="absolute -inset-2 bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 rounded-full opacity-20 animate-spin" style="animation-duration: 8s;"></div>
+                <!-- Inner rotating hexagon -->
+                <div class="absolute inset-1 border-2 border-yellow-400 opacity-60" style="clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%); animation: spin 6s linear infinite reverse;"></div>
+                
+                <!-- Main logo background with gradient -->
+                <div class="w-20 h-20 bg-gradient-to-br from-cyan-400 via-purple-600 to-pink-500 rounded-full flex items-center justify-center mx-auto relative overflow-hidden">
+                    <!-- Chess pattern overlay -->
+                    <div class="absolute inset-0 opacity-20" style="background-image: repeating-linear-gradient(45deg, transparent, transparent 3px, rgba(255,255,255,0.1) 3px, rgba(255,255,255,0.1) 6px);"></div>
+                    
+                    <!-- Multiple chess pieces for depth -->
+                    <div class="relative">
+                        <!-- Shadow king -->
+                        <i class="fas fa-chess-king absolute top-0.5 left-0.5 text-2xl text-black opacity-30"></i>
+                        <!-- Main king -->
+                        <i class="fas fa-chess-king text-2xl text-white relative z-10" style="filter: drop-shadow(0 0 8px rgba(255,255,255,0.8));"></i>
+                        <!-- Highlight -->
+                        <div class="absolute -top-1 -left-1 w-2 h-2 bg-white rounded-full opacity-60" style="filter: blur(1px);"></div>
+                    </div>
+                    
+                    <!-- Rotating crown effect -->
+                    <div class="absolute top-1 left-1/2 transform -translate-x-1/2">
+                        <div class="w-4 h-1 bg-gradient-to-r from-yellow-300 to-yellow-500 rounded-full opacity-80 animate-pulse"></div>
+                    </div>
+                </div>
+                
+                <!-- Orbiting mini pieces -->
+                <div class="absolute inset-0 pointer-events-none">
+                    <div class="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-2 animate-spin" style="animation-duration: 10s;">
+                        <i class="fas fa-chess-pawn text-xs text-cyan-400 opacity-60"></i>
+                    </div>
+                    <div class="absolute top-1/2 right-0 transform translate-x-2 -translate-y-1/2 animate-spin" style="animation-duration: 12s; animation-direction: reverse;">
+                        <i class="fas fa-chess-rook text-xs text-purple-400 opacity-60"></i>
+                    </div>
+                    <div class="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-2 animate-spin" style="animation-duration: 8s;">
+                        <i class="fas fa-chess-knight text-xs text-pink-400 opacity-60"></i>
+                    </div>
+                    <div class="absolute top-1/2 left-0 transform -translate-x-2 -translate-y-1/2 animate-spin" style="animation-duration: 14s; animation-direction: reverse;">
+                        <i class="fas fa-chess-bishop text-xs text-yellow-400 opacity-60"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <h1 class="text-6xl md:text-8xl font-black glow-text text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 mb-4" style="font-family: 'Exo 2', sans-serif;">
+            CHESS HUB
+        </h1>
+        <p class="text-xl md:text-2xl text-gray-300 font-light" style="font-family: 'Orbitron', sans-serif;">
+            Master Portal to All Chess Realms
+        </p>
     </header>
-    <div class="container mx-auto px-4 py-12">
-        <div class="flex flex-col md:flex-row items-center justify-center min-h-[80vh]">
-            <!-- Left Panel - COMMUNIST -->
-            <div class="side-panel md:w-1/4 w-full mb-10 md:mb-0 px-6 py-8 bg-gray-900 bg-opacity-50 rounded-xl backdrop-blur-sm border border-gray-700 transform hover:scale-105">
-                <div class="text-center mb-6">
-                    <h2 class="text-4xl font-bold glow-text text-red-400">COMMU</h2>
-                    <h2 class="text-4xl font-bold glow-text text-red-400">NIST</h2>
-                </div>
-                <div class="space-y-4 text-justify">
-                    <p class="text-gray-300">The Only Chessgame you'll ever need!</p>
-                    <p class="text-gray-400">Made by [KarmaGuy] and [Fantastic_Drawing555]</p>
-                </div>
-                <div class="mt-8 flex justify-center">
-                    <div class="w-16 h-16 rounded-full bg-red-500 bg-opacity-20 flex items-center justify-center">
-                        <i class="fas fa-hammer text-2xl text-red-400"></i>
+
+    <div class="container mx-auto px-4 pb-12">
+        <!-- Classic Chess Games -->
+        <section class="mb-16">
+            <div class="category-header rounded-2xl p-6 mb-8">
+                <h2 class="text-4xl font-bold text-center mb-2" style="font-family: 'Exo 2', sans-serif;">
+                    <i class="fas fa-crown mr-3 text-yellow-400"></i>
+                    CLASSIC CHESS COLLECTION
+                </h2>
+                <p class="text-center text-gray-300">Traditional chess experiences with modern twists</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Classic Chess -->
+                <div class="game-card rounded-2xl p-6 text-center group">
+                    <div class="difficulty-badge difficulty-easy">Easy</div>
+                    <div class="text-5xl mb-4 group-hover:scale-110 transition-transform duration-300">
+                        <i class="fas fa-chess-pawn text-blue-400"></i>
                     </div>
+                    <h3 class="text-2xl font-bold mb-3">Classic Chess</h3>
+                    <p class="text-gray-300 text-sm mb-4">Pure chess experience with traditional rules</p>
+                    <div class="mb-4">
+                        <span class="feature-tag">8x8 Board</span>
+                        <span class="feature-tag">Standard Rules</span>
+                        <span class="feature-tag">2 Player</span>
+                    </div>
+                    <button onclick="window.location.href='app/gamev1.html'" 
+                            class="w-full bg-gradient-to-r from-blue-500 to-blue-700 hover:from-blue-600 hover:to-blue-800 py-3 rounded-lg font-bold transition-all duration-300 transform hover:scale-105">
+                        PLAY CLASSIC
+                    </button>
+                </div>
+
+                <!-- Computer Chess -->
+                <div class="game-card rounded-2xl p-6 text-center group">
+                    <div class="difficulty-badge difficulty-medium">Medium</div>
+                    <div class="text-5xl mb-4 group-hover:scale-110 transition-transform duration-300">
+                        <i class="fas fa-robot text-purple-400"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-3">Computer Chess</h3>
+                    <p class="text-gray-300 text-sm mb-4">Battle against intelligent computer with hints</p>
+                    <div class="mb-4">
+                        <span class="feature-tag">Computer Opponent</span>
+                        <span class="feature-tag">Hints Available</span>
+                        <span class="feature-tag">Smart Engine</span>
+                    </div>
+                    <button onclick="window.location.href='app/gamev1_ai.html'" 
+                            class="w-full bg-gradient-to-r from-purple-500 to-purple-700 hover:from-purple-600 hover:to-purple-800 py-3 rounded-lg font-bold transition-all duration-300 transform hover:scale-105">
+                        CHALLENGE COMPUTER
+                    </button>
+                </div>
+
+                <!-- Pro Mode -->
+                <div class="game-card rounded-2xl p-6 text-center group">
+                    <div class="difficulty-badge difficulty-hard">Hard</div>
+                    <div class="text-5xl mb-4 group-hover:scale-110 transition-transform duration-300">
+                        <i class="fas fa-chess-knight text-red-400"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-3">Pro Mode</h3>
+                    <p class="text-gray-300 text-sm mb-4">Pure skill - no hints, just you vs computer</p>
+                    <div class="mb-4">
+                        <span class="feature-tag">No Hints</span>
+                        <span class="feature-tag">Pro Level</span>
+                        <span class="feature-tag">Pure Skill</span>
+                    </div>
+                    <button onclick="window.location.href='app/gamev1_ai_no_hint.html'" 
+                            class="w-full bg-gradient-to-r from-red-500 to-red-700 hover:from-red-600 hover:to-red-800 py-3 rounded-lg font-bold transition-all duration-300 transform hover:scale-105">
+                        PRO CHALLENGE
+                    </button>
                 </div>
             </div>
+        </section>
 
-            <!-- Center Button -->
-            <div class="mx-0 md:mx-12 my-8 md:my-0 flex flex-col items-center">
-                <button id="mainLaunchButton" class="main-button w-24 h-24 rounded-full bg-cyan-600 flex items-center justify-center mb-2 transition-transform duration-300 hover:scale-110">
-                    <i class="fas fa-rocket text-3xl"></i>
-                </button>
-                <p class="text-sm opacity-70" style="font-family: 'Press Start 2P', cursive; font-size: 0.7rem; letter-spacing: 1px;">LAUNCH</p>
+        <!-- Mega Chess & Special Variants -->
+        <section class="mb-16">
+            <div class="category-header rounded-2xl p-6 mb-8">
+                <h2 class="text-4xl font-bold text-center mb-2" style="font-family: 'Exo 2', sans-serif;">
+                    <i class="fas fa-expand mr-3 text-orange-400"></i>
+                    MEGA CHESS & VARIANTS
+                </h2>
+                <p class="text-center text-gray-300">Expanded chess with unique pieces and rules</p>
             </div>
-
-            <!-- Right Panel - CHESS -->
-            <div class="side-panel md:w-1/4 w-full mt-10 md:mt-0 px-6 py-8 bg-gray-900 bg-opacity-50 rounded-xl backdrop-blur-sm border border-gray-700 transform hover:scale-105">
-                <h2 class="text-4xl font-bold mb-6 text-center glow-text text-amber-400">CHESS</h2>
-                <div class="grid grid-cols-3 gap-3">
-                    <div class="h-16 bg-gray-700 rounded flex items-center justify-center">
-                        <i class="fas fa-chess-king text-2xl"></i>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Communist Chess -->
+                <div class="game-card rounded-2xl p-6 text-center group">
+                    <div class="difficulty-badge difficulty-expert">Revolutionary</div>
+                    <div class="text-5xl mb-4 group-hover:scale-110 transition-transform duration-300">
+                        <i class="fas fa-fist-raised text-red-500"></i>
                     </div>
-                    <div class="h-16 bg-amber-900 rounded flex items-center justify-center">
-                        <i class="fas fa-chess-queen text-2xl"></i>
+                    <h3 class="text-2xl font-bold mb-3">Communist Chess</h3>
+                    <p class="text-gray-300 text-sm mb-4">Revolutionary chess with class struggle mechanics</p>
+                    <div class="mb-4">
+                        <span class="feature-tag">Class Warfare</span>
+                        <span class="feature-tag">Revolution Meter</span>
+                        <span class="feature-tag">Special Rules</span>
                     </div>
-                    <div class="h-16 bg-gray-700 rounded flex items-center justify-center">
-                        <i class="fas fa-chess-knight text-2xl"></i>
-                    </div>
-                    <div class="h-16 bg-amber-900 rounded flex items-center justify-center">
-                        <i class="fas fa-chess-pawn text-2xl"></i>
-                    </div>
-                    <div class="h-16 bg-gray-700 rounded flex items-center justify-center">
-                        <i class="fas fa-chess-bishop text-2xl"></i>
-                    </div>
-                    <div class="h-16 bg-amber-900 rounded flex items-center justify-center">
-                        <i class="fas fa-chess-rook text-2xl"></i>
-                    </div>
+                    <button onclick="window.location.href='app/communist-chess.html'" 
+                            class="w-full bg-gradient-to-r from-red-600 to-red-800 hover:from-red-700 hover:to-red-900 py-3 rounded-lg font-bold transition-all duration-300 transform hover:scale-105">
+                        ☭ START REVOLUTION ☭
+                    </button>
                 </div>
-                <div class="mt-8 flex justify-center">
-                    <div class="w-16 h-16 rounded-full bg-amber-500 bg-opacity-20 flex items-center justify-center">
-                        <i class="fas fa-chess-board text-2xl text-amber-400"></i>
+
+                <!-- Revolutionary Chess -->
+                <div class="game-card rounded-2xl p-6 text-center group">
+                    <div class="difficulty-badge difficulty-expert">Revolutionary</div>
+                    <div class="text-5xl mb-4 group-hover:scale-110 transition-transform duration-300">
+                        <i class="fas fa-fire text-red-400"></i>
                     </div>
+                    <h3 class="text-2xl font-bold mb-3">Revolutionary Chess</h3>
+                    <p class="text-gray-300 text-sm mb-4">Rise up! Overthrow the monarchy with revolutionary powers</p>
+                    <div class="mb-4">
+                        <span class="feature-tag">SVG Pieces</span>
+                        <span class="feature-tag">Revolution Zones</span>
+                        <span class="feature-tag">Special Abilities</span>
+                    </div>
+                    <button onclick="window.location.href='app/revolutionary-chess.html'" 
+                            class="w-full bg-gradient-to-r from-red-500 to-orange-600 hover:from-red-600 hover:to-orange-700 py-3 rounded-lg font-bold transition-all duration-300 transform hover:scale-105">
+                        🔥 VIVA LA REVOLUCIÓN! 🔥
+                    </button>
+                </div>
+
+                <!-- Mega Chess -->
+                <div class="game-card rounded-2xl p-6 text-center group">
+                    <div class="difficulty-badge difficulty-expert">Expert</div>
+                    <div class="text-5xl mb-4 group-hover:scale-110 transition-transform duration-300">
+                        <i class="fas fa-chess-board text-orange-400"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-3">Mega Chess</h3>
+                    <p class="text-gray-300 text-sm mb-4">12x12 board with special lightpawn & darkpawn pieces</p>
+                    <div class="mb-4">
+                        <span class="feature-tag">12x12 Board</span>
+                        <span class="feature-tag">Special Pieces</span>
+                        <span class="feature-tag">Epic Scale</span>
+                    </div>
+                    <button onclick="window.location.href='app/mn.html'" 
+                            class="w-full bg-gradient-to-r from-orange-500 to-orange-700 hover:from-orange-600 hover:to-orange-800 py-3 rounded-lg font-bold transition-all duration-300 transform hover:scale-105">
+                        PLAY MEGA
+                    </button>
+                </div>
+
+                <!-- Game Options -->
+                <div class="game-card rounded-2xl p-6 text-center group">
+                    <div class="difficulty-badge difficulty-medium">Custom</div>
+                    <div class="text-5xl mb-4 group-hover:scale-110 transition-transform duration-300">
+                        <i class="fas fa-cogs text-cyan-400"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-3">Game Options</h3>
+                    <p class="text-gray-300 text-sm mb-4">Customize your chess experience</p>
+                    <div class="mb-4">
+                        <span class="feature-tag">Customizable</span>
+                        <span class="feature-tag">Options</span>
+                        <span class="feature-tag">Settings</span>
+                    </div>
+                    <button onclick="window.location.href='app/GAMEOPT/gameopt.html'" 
+                            class="w-full bg-gradient-to-r from-cyan-500 to-cyan-700 hover:from-cyan-600 hover:to-cyan-800 py-3 rounded-lg font-bold transition-all duration-300 transform hover:scale-105">
+                        CUSTOMIZE
+                    </button>
+                </div>
+
+                <!-- Mini Decompressed -->
+                <div class="game-card rounded-2xl p-6 text-center group">
+                    <div class="difficulty-badge difficulty-easy">Lite</div>
+                    <div class="text-5xl mb-4 group-hover:scale-110 transition-transform duration-300">
+                        <i class="fas fa-compress-alt text-green-400"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-3">Mini Chess</h3>
+                    <p class="text-gray-300 text-sm mb-4">Lightweight chess for quick games</p>
+                    <div class="mb-4">
+                        <span class="feature-tag">Lightweight</span>
+                        <span class="feature-tag">Quick Play</span>
+                        <span class="feature-tag">Fast Load</span>
+                    </div>
+                    <button onclick="window.location.href='app/min-decompressed.html'" 
+                            class="w-full bg-gradient-to-r from-green-500 to-green-700 hover:from-green-600 hover:to-green-800 py-3 rounded-lg font-bold transition-all duration-300 transform hover:scale-105">
+                        PLAY MINI
+                    </button>
                 </div>
             </div>
-        </div>
+        </section>
+
+        <!-- Live & Watch Section -->
+        <section class="mb-16">
+            <div class="category-header rounded-2xl p-6 mb-8">
+                <h2 class="text-4xl font-bold text-center mb-2" style="font-family: 'Exo 2', sans-serif;">
+                    <i class="fas fa-broadcast-tower mr-3 text-pink-400"></i>
+                    LIVE & SPECTATE
+                </h2>
+                <p class="text-center text-gray-300">Watch live games and professional matches</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Live Chess -->
+                <div class="game-card rounded-2xl p-6 text-center group">
+                    <div class="difficulty-badge difficulty-medium">Live</div>
+                    <div class="text-5xl mb-4 group-hover:scale-110 transition-transform duration-300">
+                        <i class="fas fa-wifi text-pink-400"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-3">Live Chess Room</h3>
+                    <p class="text-gray-300 text-sm mb-4">Watch live computer vs computer matches</p>
+                    <div class="mb-4">
+                        <span class="feature-tag">Live Stream</span>
+                        <span class="feature-tag">Bot vs Bot</span>
+                        <span class="feature-tag">Real Time</span>
+                    </div>
+                    <button onclick="window.location.href='app/live-chess.html'" 
+                            class="w-full bg-gradient-to-r from-pink-500 to-pink-700 hover:from-pink-600 hover:to-pink-800 py-3 rounded-lg font-bold transition-all duration-300 transform hover:scale-105">
+                        WATCH LIVE
+                    </button>
+                </div>
+
+                <!-- Pro Games -->
+                <div class="game-card rounded-2xl p-6 text-center group">
+                    <div class="difficulty-badge difficulty-expert">Pro</div>
+                    <div class="text-5xl mb-4 group-hover:scale-110 transition-transform duration-300">
+                        <i class="fas fa-trophy text-yellow-400"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-3">Watch the Pros</h3>
+                    <p class="text-gray-300 text-sm mb-4">Learn from professional chess masters</p>
+                    <div class="mb-4">
+                        <span class="feature-tag">Pro Matches</span>
+                        <span class="feature-tag">Learn</span>
+                        <span class="feature-tag">Master Level</span>
+                    </div>
+                    <button onclick="window.location.href='app/pros.html'" 
+                            class="w-full bg-gradient-to-r from-yellow-500 to-yellow-700 hover:from-yellow-600 hover:to-yellow-800 py-3 rounded-lg font-bold transition-all duration-300 transform hover:scale-105">
+                        WATCH PROS
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Live Bot Match -->
+        <section class="mb-16">
+            <h3 class="text-3xl font-bold text-center mb-6 text-amber-400" style="font-family: 'Orbitron', sans-serif;">
+                <i class="fas fa-robot mr-3"></i>LIVE BOT MATCH
+            </h3>
+            <div class="flex justify-center mb-6">
+                <div class="w-full max-w-6xl bg-gray-900 bg-opacity-50 rounded-2xl p-4 border border-cyan-500">
+                    <iframe src="app/live-chess.html" class="w-full h-[60vh] rounded-lg"></iframe>
+                </div>
+            </div>
+        </section>
+
+        <!-- Latest News (Keeping the original) -->
+        <section class="mb-16">
+            <div class="bg-gray-900 bg-opacity-50 rounded-2xl backdrop-blur-sm border border-gray-700 p-8 max-w-4xl mx-auto">
+                <h2 class="text-3xl font-bold mb-6 text-center glow-text text-cyan-400">
+                    <i class="fas fa-newspaper mr-3"></i>LATEST NEWS
+                </h2>
+                <div class="flex justify-center">
+                    <button id="newsButton" class="bg-gradient-to-r from-cyan-500 to-cyan-700 hover:from-cyan-600 hover:to-cyan-800 px-8 py-4 rounded-lg font-bold transition-all duration-300 transform hover:scale-105">
+                        <i class="fas fa-eye mr-2"></i>View Latest Updates
+                    </button>
+                </div>
+            </div>
+        </section>
     </div>
 
-    <!-- News Section -->
-<div class="container mx-auto px-4 py-12">
-    <h3 class="text-xl font-bold text-center mb-2 text-amber-400" style="font-family: 'Orbitron', sans-serif;">OTHER GAMES</h3>
-    <div class="flex justify-center gap-6 mb-6">
-        <button onclick="window.location.href='games/game1.html'" class="px-6 py-3 text-lg bg-red-500 hover:bg-red-600 rounded-xl transition transform hover:scale-105">
-            Game 1
-        </button>
-        <button onclick="window.location.href='games/game2.html'" class="px-6 py-3 text-lg bg-blue-500 hover:bg-blue-600 rounded-xl transition transform hover:scale-105">
-            Game 2
-        </button>
-        <button onclick="window.location.href='games/game3.html'" class="px-6 py-3 text-lg bg-green-500 hover:bg-green-600 rounded-xl transition transform hover:scale-105">
-            Game 3
-        </button>
-        
-        <button onclick="window.location.href='games/game4.html'" class="px-6 py-3 text-lg bg-purple-500 hover:bg-purple-600 rounded-xl transition transform hover:scale-105">
-            Game 4
-        </button>
-    </div>
-    <div class="bg-gray-900 bg-opacity-50 rounded-xl backdrop-blur-sm border border-gray-700 p-8 max-w-4xl mx-auto">
-        <h2 class="text-3xl font-bold mb-6 text-center glow-text text-cyan-400">LATEST NEWS</h2>
-        <div class="flex justify-center">
-            <button id="newsButton" class="main-button px-6 py-3 rounded-lg bg-cyan-600 hover:bg-cyan-700 transition">
-                View Latest Updates
-            </button>
-        </div>
-    </div>
-</div>
-
-
-    <!-- News Popup -->
+    <!-- News Popup (Keeping the original) -->
     <div id="newsPopup" class="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center hidden z-50">
         <div class="bg-gray-800 rounded-xl p-8 max-w-2xl w-full mx-4 border border-cyan-500 relative">
             <button id="closePopup" class="absolute top-4 right-4 text-gray-400 hover:text-white">
@@ -135,196 +517,69 @@
             </button>
             <h3 class="text-2xl font-bold mb-4 text-cyan-400">Latest News</h3>
             <div class="space-y-4 text-gray-300">
-                <p>LATEST: ADDED COMPLETE SITE OVERHAUL AND MADE A LAUNCHER</p>
-                <p>Changed README.md</p>
-                <p>STARTED THE GITHUB PAGE</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- Action Selection Popup -->
-    <div id="actionPopup" class="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center hidden z-50 transition-opacity duration-300">
-        <div class="bg-gray-800 rounded-xl p-8 max-w-md w-full mx-4 border border-cyan-500 transform transition-all duration-300 scale-95 opacity-0">
-            <h3 class="text-2xl font-bold mb-6 text-center text-cyan-400" style="font-family: 'Orbitron', sans-serif; letter-spacing: 1px;">CHOOSE AN ACTION</h3>
-            <div class="grid grid-cols-2 gap-4">
-                    <!-- Launch Button -->
-                    <div class="flex flex-col items-center">
-                        <button onclick="window.location.href='app/gamev1.html'" class="w-full aspect-square bg-red-500 hover:bg-red-600 rounded-lg flex items-center justify-center transition-transform duration-300 hover:scale-105">
-                            <i class="fas fa-rocket text-3xl"></i>
-                        </button>
-                        <p class="text-sm mt-2" style="font-family: 'Press Start 2P', cursive; font-size: 0.6rem;">LAUNCH</p>
-                    </div>
-
-                    <!-- Preview Button 1 -->
-                    <div class="flex flex-col items-center">
-                        <button id="aiPawnCaptureBtn" class="w-full aspect-square bg-gradient-to-br from-blue-500 via-cyan-500 to-teal-500 hover:from-blue-600 hover:via-cyan-600 hover:to-teal-600 rounded-lg flex items-center justify-center transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl">
-                            <i class="fas fa-robot text-3xl text-white drop-shadow-lg"></i>
-                        </button>
-                        <p class="text-sm mt-2" style="font-family: 'Press Start 2P', cursive; font-size: 0.6rem;">AI PAWN CAPTURE</p>
-                    </div>
-
-                    <!-- Preview Button 2 -->
-                    <div class="flex flex-col items-center">
-                        <button id="previewWIP" class="w-full aspect-square bg-green-500 hover:bg-green-600 rounded-lg flex items-center justify-center transition-transform duration-300 hover:scale-105">
-                            <i class="fas fa-glasses text-3xl"></i>
-                        </button>
-                        <p class="text-sm mt-2" style="font-family: 'Press Start 2P', cursive; font-size: 0.6rem;">WORK IN PROGRESS</p>
-                    </div>
-
-                                        <!-- Preview AI Game Button -->
-                    <div class="flex flex-col items-center">
-                        <button onclick="window.location.href='app/gamev1_ai.html'" 
-                            class="w-full aspect-square bg-gradient-to-br from-purple-500 via-pink-500 to-orange-500 hover:from-purple-600 hover:via-pink-600 hover:to-orange-600 rounded-lg flex items-center justify-center transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl">
-                            <i class="fas fa-chess text-3xl text-white drop-shadow-lg"></i>
-                        </button>
-                        <p class="text-sm mt-2" style="font-family: 'Press Start 2P', cursive; font-size: 0.6rem;">AI GAME</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Preview Iframe Popup -->
-    <div id="previewPopup" class="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center hidden z-50">
-        <div class="bg-gray-800 rounded-xl p-4 max-w-4xl w-full mx-4 h-[80vh] border border-cyan-500 relative">
-            <button id="closePreview" class="absolute top-4 right-4 text-gray-400 hover:text-white z-10">
-                <i class="fas fa-times text-2xl"></i>
-            </button>
-            <iframe id="previewFrame" class="w-full h-full rounded-lg" frameborder="0"></iframe>
-        </div>
-    </div>
-
-    <!-- AI Pawn Capture Warning Popup -->
-    <div id="aiWarningPopup" class="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center hidden z-50">
-        <div class="bg-gray-800 rounded-xl p-8 max-w-md w-full mx-4 border border-yellow-500 relative">
-            <h3 class="text-2xl font-bold mb-4 text-yellow-400 text-center">
-                <i class="fas fa-exclamation-triangle mr-2"></i>WARNING
-            </h3>
-            <p class="text-gray-300 mb-6 text-center">I dont know why, but you need to activate a button to play it</p>
-            <div class="flex justify-center">
-                <button id="aiWarningOk" class="px-6 py-3 bg-yellow-500 hover:bg-yellow-600 text-black font-bold rounded-lg transition">
-                    OK, close
-                </button>
+                <p><i class="fas fa-star text-yellow-400 mr-2"></i>LATEST: COMPLETE CHESS HUB OVERHAUL</p>
+                <p><i class="fas fa-fist-raised text-red-500 mr-2"></i>NEW: Communist Chess - Revolutionary variant with class struggle!</p>
+                <p><i class="fas fa-rocket text-blue-400 mr-2"></i>Added comprehensive game launcher with all variants</p>
+                <p><i class="fas fa-chess text-purple-400 mr-2"></i>Mega Chess with 12x12 board and special pieces</p>
+                <p><i class="fas fa-robot text-green-400 mr-2"></i>Enhanced computer opponents with multiple difficulty levels</p>
+                <p><i class="fas fa-wifi text-pink-400 mr-2"></i>Live Bot Match Room</p>
+                <p><i class="fas fa-code text-orange-400 mr-2"></i>Integrated Custom Chess Engine and Minimax Algorithm</p>
             </div>
         </div>
     </div>
 
     <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Main launch button functionality
-    const mainLaunchButton = document.getElementById('mainLaunchButton');
-    const actionPopup = document.getElementById('actionPopup');
-    const popupContent = actionPopup.querySelector('div');
-    const previewPopup = document.getElementById('previewPopup');
-    const previewFrame = document.getElementById('previewFrame');
-    const closePreview = document.getElementById('closePreview');
-    const previewGoogle = document.getElementById('previewGoogle');
-    const previewYouTube = document.getElementById('previewYouTube');
-    const previewWIP = document.getElementById('previewWIP');
-    const aiPawnCaptureBtn = document.getElementById('aiPawnCaptureBtn');
-    const aiWarningPopup = document.getElementById('aiWarningPopup');
-    const aiWarningOk = document.getElementById('aiWarningOk');
-
-    if (mainLaunchButton) {
-        mainLaunchButton.addEventListener('click', () => {
-            actionPopup.classList.remove('hidden');
-            setTimeout(() => {
-                popupContent.classList.remove('scale-95', 'opacity-0');
-                popupContent.classList.add('scale-100', 'opacity-100');
-            }, 10);
-        });
+    // Create constellation background
+    function createConstellation() {
+        const constellation = document.getElementById('constellation');
+        const numStars = 50;
+        
+        for (let i = 0; i < numStars; i++) {
+            const star = document.createElement('div');
+            star.className = 'star';
+            star.style.left = Math.random() * 100 + '%';
+            star.style.top = Math.random() * 100 + '%';
+            star.style.width = Math.random() * 3 + 1 + 'px';
+            star.style.height = star.style.width;
+            star.style.animationDelay = Math.random() * 3 + 's';
+            constellation.appendChild(star);
+        }
     }
-
-    if (actionPopup) {
-        actionPopup.addEventListener('click', (e) => {
-            if (e.target === actionPopup) {
-                popupContent.classList.add('scale-95', 'opacity-0');
-                setTimeout(() => {
-                    actionPopup.classList.add('hidden');
-                }, 300);
-            }
-        });
-    }
-
-    if (previewGoogle) {
-    previewGoogle.addEventListener('click', (e) => {
-        e.preventDefault();
-        previewFrame.src = 'app/gamev1.html';
-        previewPopup.classList.remove('hidden');
-        popupContent.classList.add('scale-95', 'opacity-0');
-        setTimeout(() => {
-            actionPopup.classList.add('hidden');
-        }, 300);
-    });
-}
-
-    if (previewYouTube) {
-        previewYouTube.addEventListener('click', (e) => {
-            e.preventDefault();
-            previewFrame.src = 'index.html';
-            previewPopup.classList.remove('hidden');
-            popupContent.classList.add('scale-95', 'opacity-0');
-            setTimeout(() => {
-                actionPopup.classList.add('hidden');
-            }, 300);
-        });
-    }
-
-    if (previewWIP) {
-        previewWIP.addEventListener('click', (e) => {
-            e.preventDefault();
-            previewFrame.src = 'games/preview2.html';
-            previewPopup.classList.remove('hidden');
-            popupContent.classList.add('scale-95', 'opacity-0');
-            setTimeout(() => {
-                actionPopup.classList.add('hidden');
-            }, 300);
-        });
-    }
-
-    // AI Pawn Capture warning functionality
-    if (aiPawnCaptureBtn) {
-        aiPawnCaptureBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            aiWarningPopup.classList.remove('hidden');
-            // Close the action popup
-            popupContent.classList.add('scale-95', 'opacity-0');
-            setTimeout(() => {
-                actionPopup.classList.add('hidden');
-            }, 300);
-        });
-    }
-
-    if (aiWarningOk) {
-        aiWarningOk.addEventListener('click', () => {
-            aiWarningPopup.classList.add('hidden');
-            window.location.href = 'app/gamev1_ai_no_hint.html';
-        });
-    }
-
-    if (closePreview) {
-        closePreview.addEventListener('click', () => {
-            previewPopup.classList.add('hidden');
-            previewFrame.src = '';
-        });
-    }
+    
+    createConstellation();
 
     // News popup functionality
     const newsButton = document.getElementById('newsButton');
     const newsPopup = document.getElementById('newsPopup');
     const closePopup = document.getElementById('closePopup');
 
-    if (newsButton) {
+    if (newsButton && newsPopup) {
         newsButton.addEventListener('click', () => {
-            newsPopup.classList.remove('hidden');
+            newsPopup.classList.toggle('hidden');
         });
     }
 
-    if (closePopup) {
-        closePopup.addEventListener('click', () => {
-            newsPopup.classList.add('hidden');
+    if (closePopup && newsPopup) {
+        closePopup.addEventListener('click', (e) => {
+            e.stopPropagation();
+            newsPopup.classList.toggle('hidden');
+        });
+        
+        // Close when clicking outside of the popup content
+        newsPopup.addEventListener('click', (e) => {
+            if (e.target === newsPopup) {
+                newsPopup.classList.toggle('hidden');
+            }
         });
     }
+
+    // Add hover sound effect simulation
+    document.querySelectorAll('.game-card').forEach(card => {
+        card.addEventListener('mouseenter', () => {
+            // You could add sound effects here if desired
+        });
+    });
 });
 </script>
 </html>

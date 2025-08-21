@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live AI vs AI Chess Match</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .chess-board { width: 100%; max-width: 500px; aspect-ratio: 1/1; margin: 2rem auto; }
+        .square { position: relative; width: 12.5%; height: 12.5%; float: left; display: flex; justify-content: center; align-items: center; }
+        .light { background-color: #f0d9b5; }
+        .dark { background-color: #b58863; }
+        .piece { width: 80%; height: 80%; background-size: contain; background-repeat: no-repeat; background-position: center; z-index: 1; }
+    </style>
+</head>
+<body class="bg-gray-900 text-white">
+    <div class="chess-board relative bg-gray-800 shadow-2xl rounded-lg overflow-hidden"></div>
+    <script src="chess-engine.js"></script>
+    <script src="chess-ai.js"></script>
+    <script src="chess-ui.js"></script>
+</body>
+</html>

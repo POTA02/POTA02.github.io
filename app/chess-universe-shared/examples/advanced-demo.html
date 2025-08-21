@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chess Universe - Advanced Integration Demo</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .demo-header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        .demo-header h1 {
+            font-size: 3em;
+            margin: 0;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .demo-header p {
+            font-size: 1.2em;
+            margin: 10px 0 0 0;
+            opacity: 0.9;
+        }
+
+        #game-container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+
+        .demo-footer {
+            text-align: center;
+            color: white;
+            margin-top: 30px;
+            opacity: 0.8;
+        }
+
+        .demo-footer a {
+            color: #ffeb3b;
+            text-decoration: none;
+        }
+
+        .demo-footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Loading animation */
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 200px;
+            color: #667eea;
+            font-size: 1.2em;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin-right: 15px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            
+            .demo-header h1 {
+                font-size: 2em;
+            }
+            
+            .demo-header p {
+                font-size: 1em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-header">
+        <h1>♔ Chess Universe ♛</h1>
+        <p>Advanced Integration Demo - Full-Featured Chess Experience</p>
+    </div>
+
+    <div id="game-container">
+        <div class="loading">
+            <div class="spinner"></div>
+            Loading Chess Universe...
+        </div>
+    </div>
+
+    <div class="demo-footer">
+        <p>
+            Powered by <strong>Chess Universe Shared Library</strong> |
+            <a href="../README.md">Documentation</a> |
+            <a href="https://github.com/chess-universe">GitHub</a>
+        </p>
+        <p>
+            Features: AI Opponent • Voice Assistant • Cheat System • Advanced Analytics
+        </p>
+    </div>
+
+    <!-- Load the Chess Universe components -->
+    <script type="module">
+        import AdvancedChessGame from './advanced-integration.js';
+
+        // Initialize the game when DOM is ready
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                // Create game instance with all features enabled
+                const game = new AdvancedChessGame('game-container', {
+                    enableAI: true,
+                    enableVoice: true,
+                    enableCheats: true,
+                    aiDifficulty: 3,
+                    voicePersonality: 'professional',
+                    theme: 'modern'
+                });
+
+                // Log successful initialization
+                console.log('Chess Universe Advanced Demo initialized successfully!');
+                console.log('Game features:', {
+                    AI: 'Enabled with 5 difficulty levels',
+                    Voice: 'Enabled with 4 personality types',
+                    Cheats: 'Enabled with 6 cheat modes',
+                    Analytics: 'Real-time game statistics'
+                });
+
+                // Make game globally accessible for debugging
+                window.chessGame = game;
+
+            } catch (error) {
+                console.error('Failed to initialize Chess Universe:', error);
+                
+                // Show error message
+                document.getElementById('game-container').innerHTML = `
+                    <div style="padding: 40px; text-align: center; color: #dc3545;">
+                        <h3>Failed to Load Chess Universe</h3>
+                        <p>Error: ${error.message}</p>
+                        <p>Please check the console for more details.</p>
+                        <button onclick="location.reload()" 
+                                style="padding: 10px 20px; background: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer;">
+                            Retry
+                        </button>
+                    </div>
+                `;
+            }
+        });
+
+        // Add some demo functionality
+        window.demoFunctions = {
+            // Test all voice personalities
+            testAllVoices: function() {
+                const personalities = ['professional', 'casual', 'dramatic', 'funny'];
+                let index = 0;
+                
+                const testNext = () => {
+                    if (index < personalities.length && window.chessGame.voice) {
+                        window.chessGame.voice.setPersonality(personalities[index]);
+                        window.chessGame.voice.testVoice();
+                        index++;
+                        setTimeout(testNext, 3000);
+                    }
+                };
+                
+                testNext();
+            },
+
+            // Simulate a quick game
+            playDemo: function() {
+                if (!window.chessGame) return;
+                
+                const moves = [
+                    [1, 4, 3, 4], // e2-e4
+                    [6, 4, 4, 4], // e7-e5
+                    [0, 6, 2, 5], // Nf3
+                    [7, 1, 5, 2], // Nc6
+                    [0, 5, 3, 2], // Bc4
+                    [7, 5, 4, 2]  // Bc5
+                ];
+                
+                let moveIndex = 0;
+                const makeMove = () => {
+                    if (moveIndex < moves.length) {
+                        const [fr, fc, tr, tc] = moves[moveIndex];
+                        window.chessGame.engine.movePiece(fr, fc, tr, tc);
+                        window.chessGame.renderBoard();
+                        moveIndex++;
+                        setTimeout(makeMove, 1500);
+                    }
+                };
+                
+                makeMove();
+            },
+
+            // Export game state
+            exportState: function() {
+                if (window.chessGame) {
+                    const state = window.chessGame.getGameState();
+                    console.log('Current game state:', state);
+                    return state;
+                }
+            }
+        };
+
+        // Add keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (!window.chessGame) return;
+            
+            switch (e.key) {
+                case 'n':
+                case 'N':
+                    if (e.ctrlKey) {
+                        e.preventDefault();
+                        window.chessGame.newGame();
+                    }
+                    break;
+                case 'z':
+                case 'Z':
+                    if (e.ctrlKey) {
+                        e.preventDefault();
+                        window.chessGame.undoMove();
+                    }
+                    break;
+                case 'f':
+                case 'F':
+                    if (e.ctrlKey) {
+                        e.preventDefault();
+                        window.chessGame.flipBoard();
+                    }
+                    break;
+            }
+        });
+
+        // Add demo instructions
+        console.log(`
+🎮 Chess Universe Advanced Demo Controls:
+
+Keyboard Shortcuts:
+• Ctrl+N: New Game
+• Ctrl+Z: Undo Move  
+• Ctrl+F: Flip Board
+
+Console Commands:
+• demoFunctions.testAllVoices() - Test all voice personalities
+• demoFunctions.playDemo() - Play a quick demo game
+• demoFunctions.exportState() - Export current game state
+• chessGame.getGameState() - Get detailed game information
+
+Features Available:
+✅ 5-Level AI Opponent with Personalities
+✅ 4 Voice Assistant Personalities  
+✅ 6 Cheat Modes (See All Moves, God Mode, etc.)
+✅ Real-time Game Analytics
+✅ Responsive Design
+✅ Full Mobile Support
+
+Enjoy exploring the Chess Universe! 🏰♞
+        `);
+    </script>
+</body>
+</html>

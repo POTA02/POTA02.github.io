@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Communist Chess - Revolutionary Chess Variant</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #8B0000 0%, #DC143C 25%, #B22222 50%, #8B0000 75%, #654321 100%);
+            min-height: 100vh;
+            font-family: 'Times New Roman', serif;
+        }
+
+        .communist-header {
+            background: linear-gradient(90deg, #FFD700, #FF4500, #FFD700);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .chess-board {
+            width: 100%;
+            max-width: 600px;
+            aspect-ratio: 1/1;
+            margin: 0 auto;
+            border: 4px solid #FFD700;
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
+        }
+        
+        .square {
+            position: relative;
+            width: 12.5%;
+            height: 12.5%;
+            float: left;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .light {
+            background-color: #FFFAF0;
+        }
+        
+        .dark {
+            background-color: #8B0000;
+        }
+        
+        .highlight {
+            box-shadow: inset 0 0 20px 8px rgba(255, 215, 0, 0.8);
+            animation: glow 1s infinite alternate;
+        }
+
+        @keyframes glow {
+            from { box-shadow: inset 0 0 20px 8px rgba(255, 215, 0, 0.8); }
+            to { box-shadow: inset 0 0 20px 8px rgba(255, 215, 0, 0.4); }
+        }
+        
+        .possible-move {
+            position: absolute;
+            width: 30%;
+            height: 30%;
+            border-radius: 50%;
+            background-color: rgba(255, 215, 0, 0.6);
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.6; }
+            50% { transform: scale(1.2); opacity: 0.9; }
+        }
+        
+        .piece {
+            width: 85%;
+            height: 85%;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            z-index: 1;
+            pointer-events: none;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: transform 0.2s ease;
+        }
+
+        .piece:hover {
+            transform: scale(1.1);
+        }
+
+        .proletariat {
+            color: #8B4513;
+            text-shadow: 2px 2px 4px rgba(139, 69, 19, 0.8);
+        }
+
+        .bourgeoisie {
+            color: #000080;
+            text-shadow: 2px 2px 4px rgba(0, 0, 139, 0.8);
+        }
+
+        .revolutionary-panel {
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #FFD700;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px;
+            color: #FFD700;
+        }
+
+        .revolution-meter {
+            background: #8B0000;
+            height: 20px;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+
+        .revolution-progress {
+            background: linear-gradient(90deg, #FFD700, #FF4500);
+            height: 100%;
+            transition: width 0.5s ease;
+            position: relative;
+        }
+
+        .revolution-progress::after {
+            content: "☭";
+            position: absolute;
+            right: 5px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #8B0000;
+            font-weight: bold;
+        }
+
+        .status-panel {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .class-status {
+            text-align: center;
+            padding: 15px;
+            border-radius: 8px;
+            background: rgba(0, 0, 0, 0.6);
+            border: 2px solid;
+        }
+
+        .proletariat-status {
+            border-color: #8B4513;
+            color: #D2691E;
+        }
+
+        .bourgeoisie-status {
+            border-color: #000080;
+            color: #4169E1;
+        }
+
+        .rules-panel {
+            background: rgba(0, 0, 0, 0.9);
+            color: #FFD700;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px;
+            border: 2px solid #FF4500;
+        }
+
+        .rule-category {
+            margin: 15px 0;
+            padding: 10px;
+            background: rgba(139, 0, 0, 0.3);
+            border-left: 4px solid #FFD700;
+        }
+
+        .communist-button {
+            background: linear-gradient(45deg, #8B0000, #DC143C);
+            color: #FFD700;
+            border: 2px solid #FFD700;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 5px;
+        }
+
+        .communist-button:hover {
+            background: linear-gradient(45deg, #DC143C, #8B0000);
+            transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+        }
+
+        .mobilization-effect {
+            animation: mobilize 2s ease-in-out;
+        }
+
+        @keyframes mobilize {
+            0%, 100% { transform: scale(1); }
+            25% { transform: scale(1.1) rotate(5deg); }
+            75% { transform: scale(1.1) rotate(-5deg); }
+        }
+
+        .revolution-announcement {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: radial-gradient(circle, #8B0000, #000);
+            color: #FFD700;
+            padding: 30px;
+            border: 3px solid #FFD700;
+            border-radius: 15px;
+            font-size: 2em;
+            font-weight: bold;
+            text-align: center;
+            z-index: 1000;
+            animation: revolutionary-entrance 3s ease-out;
+        }
+
+        @keyframes revolutionary-entrance {
+            0% { 
+                transform: translate(-50%, -50%) scale(0) rotate(360deg);
+                opacity: 0;
+            }
+            50% {
+                transform: translate(-50%, -50%) scale(1.2) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(-50%, -50%) scale(1) rotate(0deg);
+                opacity: 1;
+            }
+        }
+
+        .collective-action {
+            border: 3px solid #FFD700;
+            animation: collective-glow 2s infinite;
+        }
+
+        @keyframes collective-glow {
+            0%, 100% { border-color: #FFD700; }
+            50% { border-color: #FF4500; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container mx-auto p-4">
+        <!-- Header -->
+        <div class="text-center mb-6">
+            <h1 class="text-6xl font-bold communist-header mb-4">
+                ☭ COMMUNIST CHESS ☭
+            </h1>
+            <h2 class="text-2xl text-yellow-400 mb-2">Revolutionary Chess Variant</h2>
+            <p class="text-yellow-300 italic">"Workers of the World, Unite on the Chess Board!"</p>
+        </div>
+
+        <!-- Game Status -->
+        <div class="status-panel">
+            <div class="class-status proletariat-status">
+                <h3 class="text-xl font-bold mb-2">🔨 PROLETARIAT 🔨</h3>
+                <div>Class Consciousness: <span id="proletariat-consciousness">0</span></div>
+                <div>Collective Power: <span id="proletariat-power">0</span></div>
+                <div>Revolution Points: <span id="revolution-points">0</span>/100</div>
+            </div>
+            <div class="class-status bourgeoisie-status">
+                <h3 class="text-xl font-bold mb-2">👑 BOURGEOISIE 👑</h3>
+                <div>Capital: <span id="bourgeoisie-capital">100</span></div>
+                <div>Oppression Level: <span id="oppression-level">0</span></div>
+                <div>Exploitation Index: <span id="exploitation-index">0</span></div>
+            </div>
+        </div>
+
+        <!-- Revolution Meter -->
+        <div class="revolutionary-panel">
+            <h3 class="text-xl font-bold mb-2">🚩 REVOLUTION METER 🚩</h3>
+            <div class="revolution-meter">
+                <div id="revolution-progress" class="revolution-progress" style="width: 0%"></div>
+            </div>
+            <div class="text-center mt-2">
+                <span id="revolution-status">The masses stir...</span>
+            </div>
+        </div>
+
+        <!-- Game Board -->
+        <div class="flex justify-center mb-6">
+            <div id="chess-board" class="chess-board">
+                <!-- Chess squares will be generated here -->
+            </div>
+        </div>
+
+        <!-- Game Controls -->
+        <div class="text-center mb-6">
+            <button id="new-game" class="communist-button">🚩 NEW REVOLUTION</button>
+            <button id="mobilize-workers" class="communist-button">🔨 MOBILIZE WORKERS</button>
+            <button id="seize-means" class="communist-button">⚒️ SEIZE MEANS OF PRODUCTION</button>
+        </div>
+
+        <!-- Current Turn -->
+        <div class="text-center mb-4">
+            <h3 class="text-2xl font-bold" id="current-turn">
+                🔨 Proletariat's Turn 🔨
+            </h3>
+            <div id="game-status" class="text-yellow-400 mt-2">
+                Class struggle begins!
+            </div>
+        </div>
+
+        <!-- Rules Panel -->
+        <div class="rules-panel">
+            <h2 class="text-3xl font-bold text-center mb-4">⚡ REVOLUTIONARY RULES ⚡</h2>
+            
+            <div class="rule-category">
+                <h3 class="text-xl font-bold text-red-400 mb-2">🏭 CLASS CONSCIOUSNESS SYSTEM</h3>
+                <ul class="list-disc ml-6 space-y-1">
+                    <li><strong>Proletariat Pawns:</strong> Gain consciousness each move. At 3 consciousness, can promote to any piece</li>
+                    <li><strong>Collective Action:</strong> When 3+ proletariat pieces are adjacent, they can move together</li>
+                    <li><strong>Solidarity:</strong> Proletariat pieces can sacrifice themselves to save allies</li>
+                </ul>
+            </div>
+
+            <div class="rule-category">
+                <h3 class="text-xl font-bold text-blue-400 mb-2">💰 CAPITALIST EXPLOITATION</h3>
+                <ul class="list-disc ml-6 space-y-1">
+                    <li><strong>Capital Accumulation:</strong> Bourgeoisie gains capital for each piece captured</li>
+                    <li><strong>Wage Theft:</strong> Can steal moves from proletariat pieces within 2 squares</li>
+                    <li><strong>Private Property:</strong> Can claim squares as "property" (3 turns protection)</li>
+                </ul>
+            </div>
+
+            <div class="rule-category">
+                <h3 class="text-xl font-bold text-yellow-400 mb-2">🚩 REVOLUTIONARY CONDITIONS</h3>
+                <ul class="list-disc ml-6 space-y-1">
+                    <li><strong>Revolution Meter:</strong> Fills when proletariat captures bourgeoisie pieces</li>
+                    <li><strong>General Strike:</strong> At 50 revolution points, can freeze all bourgeoisie pieces for 2 turns</li>
+                    <li><strong>Revolution Victory:</strong> At 100 points, proletariat can win by controlling center 4 squares</li>
+                </ul>
+            </div>
+
+            <div class="rule-category">
+                <h3 class="text-xl font-bold text-orange-400 mb-2">⚒️ SPECIAL ABILITIES</h3>
+                <ul class="list-disc ml-6 space-y-1">
+                    <li><strong>Mobilize Workers:</strong> Move all pawns forward 1 square (once per game)</li>
+                    <li><strong>Seize Means:</strong> Convert captured pieces to your class (limited uses)</li>
+                </ul>
+            </div>
+
+            <div class="rule-category">
+                <h3 class="text-xl font-bold text-green-400 mb-2">🎯 VICTORY CONDITIONS</h3>
+                <ul class="list-disc ml-6 space-y-1">
+                    <li><strong>Traditional:</strong> Checkmate the opposing king</li>
+                    <li><strong>Revolutionary:</strong> Proletariat controls center 4 squares with revolution meter full</li>
+                    <li><strong>Counter-Revolutionary:</strong> Bourgeoisie maintains 80+ capital for 10 turns</li>
+                    <li><strong>Class Consciousness:</strong> All remaining pieces achieve class consciousness</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Communist Chess Game Engine
+        class CommunistChess {
+            constructor() {
+                this.board = [];
+                this.currentPlayer = 'proletariat'; // proletariat starts
+                this.selectedSquare = null;
+                this.gameState = {
+                    proletariatConsciousness: 0,
+                    proletariatPower: 0,
+                    revolutionPoints: 0,
+                    bourgeoisieCapital: 100,
+                    oppressionLevel: 0,
+                    exploitationIndex: 0,
+                    generalStrikeActive: false,
+                    striketurnsLeft: 0,
+                    mobilizeUsed: false,
+                    seizeUsed: 0,
+                    maxSeizeUses: 1
+                };
+                this.pawnConsciousness = {}; // Track consciousness for each pawn
+                this.privatePropery = {}; // Track bourgeoisie claimed squares
+                this.moveHistory = [];
+                this.initializeBoard();
+                this.renderBoard();
+                this.updateGameStatus();
+                this.setupEventListeners();
+            }
+
+            initializeBoard() {
+                // Initialize 8x8 board
+                this.board = Array(8).fill(null).map(() => Array(8).fill(null));
+                
+                // Proletariat pieces (brown/working class) - bottom
+                const proletariatPieces = [
+                    { type: 'rook', class: 'proletariat' },
+                    { type: 'knight', class: 'proletariat' },
+                    { type: 'bishop', class: 'proletariat' },
+                    { type: 'queen', class: 'proletariat' },
+                    { type: 'king', class: 'proletariat' },
+                    { type: 'bishop', class: 'proletariat' },
+                    { type: 'knight', class: 'proletariat' },
+                    { type: 'rook', class: 'proletariat' }
+                ];
+                
+                for (let i = 0; i < 8; i++) {
+                    this.board[7][i] = { ...proletariatPieces[i], consciousness: 0 };
+                    this.board[6][i] = { type: 'pawn', class: 'proletariat', consciousness: 0 };
+                    this.pawnConsciousness[`6,${i}`] = 0;
+                }
+
+                // Bourgeoisie pieces (blue/ruling class) - top
+                const bourgeoisPieces = [
+                    { type: 'rook', class: 'bourgeoisie' },
+                    { type: 'knight', class: 'bourgeoisie' },
+                    { type: 'bishop', class: 'bourgeoisie' },
+                    { type: 'queen', class: 'bourgeoisie' },
+                    { type: 'king', class: 'bourgeoisie' },
+                    { type: 'bishop', class: 'bourgeoisie' },
+                    { type: 'knight', class: 'bourgeoisie' },
+                    { type: 'rook', class: 'bourgeoisie' }
+                ];
+                
+                for (let i = 0; i < 8; i++) {
+                    this.board[0][i] = { ...bourgeoisPieces[i], capital: 10 };
+                    this.board[1][i] = { type: 'pawn', class: 'bourgeoisie', capital: 5 };
+                }
+            }
+
+            renderBoard() {
+                const boardElement = document.getElementById('chess-board');
+                boardElement.innerHTML = '';
+
+                for (let row = 0; row < 8; row++) {
+                    for (let col = 0; col < 8; col++) {
+                        const square = document.createElement('div');
+                        square.className = `square ${(row + col) % 2 === 0 ? 'light' : 'dark'}`;
+                        square.dataset.row = row;
+                        square.dataset.col = col;
+                        square.onclick = () => this.handleSquareClick(row, col);
+
+                        // Add private property marker
+                        if (this.privatePropery[`${row},${col}`]) {
+                            square.style.border = '3px solid gold';
+                            square.title = 'Private Property (Protected)';
+                        }
+
+                        if (this.board[row][col]) {
+                            const piece = document.createElement('div');
+                            piece.className = `piece ${this.board[row][col].class}`;
+                            
+                            // Set SVG background based on piece type and class
+                            const svg = this.getPieceSVG(this.board[row][col].type, this.board[row][col].class);
+                            piece.style.backgroundImage = `url('data:image/svg+xml;utf8,${encodeURIComponent(svg)}')`;
+                            
+                            // Add consciousness indicator for proletariat pawns
+                            if (this.board[row][col].class === 'proletariat' && 
+                                this.board[row][col].type === 'pawn' && 
+                                this.pawnConsciousness[`${row},${col}`] > 0) {
+                                piece.title = `Consciousness: ${this.pawnConsciousness[`${row},${col}`]}/3`;
+                                piece.style.boxShadow = `0 0 ${this.pawnConsciousness[`${row},${col}`] * 5}px red`;
+                            }
+
+                            square.appendChild(piece);
+                        }
+
+                        // Highlight selected square
+                        if (this.selectedSquare && 
+                            this.selectedSquare.row === row && 
+                            this.selectedSquare.col === col) {
+                            square.classList.add('highlight');
+                        }
+
+                        boardElement.appendChild(square);
+                    }
+                }
+            }
+
+            getPieceSVG(type, pieceClass) {
+                const pieceColor = pieceClass === 'proletariat' ? '#8B4513' : '#000080';
+                const strokeColor = pieceClass === 'proletariat' ? '#654321' : '#000040';
+                
+                switch(type) {
+                    case 'pawn':
+                        return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45 45">
+                            <path d="M22.5 9c-2.21 0-4 1.79-4 4 0 .89.29 1.71.78 2.38C17.33 16.5 16 18.59 16 21c0 2.03.94 3.84 2.41 5.03-3 1.06-7.41 5.55-7.41 13.47h23c0-7.92-4.41-12.41-7.41-13.47 1.47-1.19 2.41-3 2.41-5.03 0-2.41-1.33-4.5-3.28-5.62.49-.67.78-1.49.78-2.38 0-2.21-1.79-4-4-4z" 
+                            stroke="${strokeColor}" fill="${pieceColor}" stroke-width="1.5" stroke-linecap="round"/>
+                        </svg>`;
+                    case 'rook':
+                        return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45 45">
+                            <g fill="${pieceColor}" stroke="${strokeColor}" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M9 39h27v-3H9v3zM12 36v-4h21v4H12zM11 14V9h4v2h5V9h5v2h5V9h4v5"/>
+                                <path d="M34 14l-3 3H14l-3-3"/>
+                                <path d="M31 17v12.5H14V17"/>
+                                <path d="M31 29.5l1.5 2.5h-20l1.5-2.5z"/>
+                                <path d="M11 14h23"/>
+                            </g>
+                        </svg>`;
+                    case 'knight':
+                        return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45 45">
+                            <g fill="${pieceColor}" stroke="${strokeColor}" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M22 10c10.5 1 16.5 8 16 29H15c0-9 10-6.5 8-21"/>
+                                <path d="M24 18c.38 2.91-5.55 7.37-8 9-3 2-2.82 4.34-5 4-1.042-.94 1.41-3.04 0-3-1 0 .19 1.23-1 2-1 0-4.003 1-4-1 0-2 6-12 6-12s1.89-1.9 2-3.5c-.73-.994-.5-2-.5-3 1-1 3 2.5 3 2.5h2s.78-1.992 2.5-3c1 0 1 3 1 3"/>
+                                <circle cx="9.5" cy="25.5" r=".5" fill="${strokeColor}"/>
+                                <circle cx="14.933" cy="15.75" r="1" fill="${strokeColor}"/>
+                            </g>
+                        </svg>`;
+                    case 'bishop':
+                        return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45 45">
+                            <g fill="${pieceColor}" stroke="${strokeColor}" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M9 36c3.39-.97 10.11.43 13.5-2 3.39 2.43 10.11 1.03 13.5 2 0 0 1.65.54 3 2-.68.97-1.65.99-3 .5-3.39-.97-10.11.46-13.5-1-3.39 1.46-10.11.03-13.5 1-1.354.49-2.323.47-3-.5 1.354-1.94 3-2 3-2z"/>
+                                <path d="M15 32c2.5 2.5 12.5 2.5 15 0 .5-1.5 0-2 0-2 0-2.5-2.5-4-2.5-4 5.5-1.5 6-11.5-5-15.5-11 4-10.5 14-5 15.5 0 0-2.5 1.5-2.5 4 0 0-.5.5 0 2z"/>
+                                <circle cx="22.5" cy="8.5" r="2.5" stroke="${strokeColor}"/>
+                            </g>
+                        </svg>`;
+                    case 'queen':
+                        return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45 45">
+                            <g fill="${pieceColor}" stroke="${strokeColor}" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M9 26c8.5-1.5 21-1.5 27 0l2.5-12.5L31 25l-.3-14.1-5.2 13.6-3-14.5-3 14.5-5.2-13.6L14 25 6.5 13.5 9 26z"/>
+                                <path d="M9 26c0 2 1.5 2 2.5 4 1 1.5 1 1 .5 3.5-1.5 1-1 2.5-1 2.5-1.5 1.5 0 2.5 0 2.5 6.5 1 16.5 1 23 0 0 0 1.5-1 0-2.5 0 0 .5-1.5-1-2.5-.5-2.5-.5-2 .5-3.5 1-2 2.5-2 2.5-4-8.5-1.5-18.5-1.5-27 0z"/>
+                                <path d="M11.5 30c3.5-1 18.5-1 22 0m-21.5 1.5c2-1 15-1 17 0" fill="none"/>
+                            </g>
+                        </svg>`;
+                    case 'king':
+                        return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45 45">
+                            <g fill="${pieceColor}" stroke="${strokeColor}" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M22.5 11.63V6M22.5 25s4.5-7.5 3-10.5c0 0-1-2.5-3-2.5s-3 2.5-3 2.5c-1.5 3 3 10.5 3 10.5"/>
+                                <path d="M12.5 37c5.5 3.5 14.5 3.5 20 0v-7s9-4.5 6-10.5c-4-6.5-13.5-3.5-16 4V27v-3.5c-2.5-7.5-12-10.5-16-4-3 6 6 10.5 6 10.5v7"/>
+                                <path d="M20 8h5"/>
+                                <circle cx="22.5" cy="6.5" r="2" stroke="${strokeColor}"/>
+                            </g>
+                        </svg>`;
+                    default:
+                        return '';
+                }
+            }
+
+            handleSquareClick(row, col) {
+                if (this.selectedSquare) {
+                    // Try to move
+                    if (this.isValidMove(this.selectedSquare.row, this.selectedSquare.col, row, col)) {
+                        this.makeMove(this.selectedSquare.row, this.selectedSquare.col, row, col);
+                    }
+                    this.selectedSquare = null;
+                } else {
+                    // Select piece
+                    if (this.board[row][col] && this.board[row][col].class === this.currentPlayer) {
+                        this.selectedSquare = { row, col };
+                    }
+                }
+                this.renderBoard();
+            }
+
+            isValidMove(fromRow, fromCol, toRow, toCol) {
+                // Basic validation
+                if (toRow < 0 || toRow >= 8 || toCol < 0 || toCol >= 8) return false;
+                
+                const piece = this.board[fromRow][fromCol];
+                const target = this.board[toRow][toCol];
+                
+                if (!piece) return false;
+                if (piece.class !== this.currentPlayer) return false;
+                if (target && target.class === piece.class) return false;
+
+                // Check private property protection
+                if (this.privatePropery[`${toRow},${toCol}`] && piece.class === 'proletariat') {
+                    this.showMessage('🚫 Cannot move to private property!');
+                    return false;
+                }
+
+                // Simplified movement rules (expand as needed)
+                return this.isValidPieceMove(piece.type, piece.class, fromRow, fromCol, toRow, toCol);
+            }
+
+            isValidPieceMove(pieceType, pieceClass, fromRow, fromCol, toRow, toCol) {
+                const rowDiff = Math.abs(toRow - fromRow);
+                const colDiff = Math.abs(toCol - fromCol);
+
+                switch (pieceType) {
+                    case 'pawn':
+                        if (pieceClass === 'proletariat') {
+                            // Proletariat pawns move up the board (towards row 0)
+                            if (fromCol === toCol && toRow === fromRow - 1 && !this.board[toRow][toCol]) return true;
+                            if (fromRow === 6 && fromCol === toCol && toRow === 4 && !this.board[toRow][toCol]) return true;
+                            if (rowDiff === 1 && colDiff === 1 && this.board[toRow][toCol]) return true;
+                        } else {
+                            // Bourgeoisie pawns move down the board (towards row 7)
+                            if (fromCol === toCol && toRow === fromRow + 1 && !this.board[toRow][toCol]) return true;
+                            if (fromRow === 1 && fromCol === toCol && toRow === 3 && !this.board[toRow][toCol]) return true;
+                            if (rowDiff === 1 && colDiff === 1 && this.board[toRow][toCol]) return true;
+                        }
+                        break;
+                    case 'rook':
+                        return (fromRow === toRow || fromCol === toCol) && this.isPathClear(fromRow, fromCol, toRow, toCol);
+                    case 'knight':
+                        return (rowDiff === 2 && colDiff === 1) || (rowDiff === 1 && colDiff === 2);
+                    case 'bishop':
+                        return rowDiff === colDiff && this.isPathClear(fromRow, fromCol, toRow, toCol);
+                    case 'queen':
+                        return (fromRow === toRow || fromCol === toCol || rowDiff === colDiff) && 
+                               this.isPathClear(fromRow, fromCol, toRow, toCol);
+                    case 'king':
+                        return rowDiff <= 1 && colDiff <= 1;
+                }
+                return false;
+            }
+
+            isPathClear(fromRow, fromCol, toRow, toCol) {
+                const rowStep = toRow > fromRow ? 1 : toRow < fromRow ? -1 : 0;
+                const colStep = toCol > fromCol ? 1 : toCol < fromCol ? -1 : 0;
+                
+                let currentRow = fromRow + rowStep;
+                let currentCol = fromCol + colStep;
+                
+                while (currentRow !== toRow || currentCol !== toCol) {
+                    if (this.board[currentRow][currentCol]) return false;
+                    currentRow += rowStep;
+                    currentCol += colStep;
+                }
+                return true;
+            }
+
+            makeMove(fromRow, fromCol, toRow, toCol) {
+                const piece = this.board[fromRow][fromCol];
+                const captured = this.board[toRow][toCol];
+
+                // Handle capture effects
+                if (captured) {
+                    this.handleCapture(piece, captured);
+                }
+
+                // Move piece
+                this.board[toRow][toCol] = piece;
+                this.board[fromRow][fromCol] = null;
+
+                // Handle special effects
+                this.handleMoveEffects(piece, fromRow, fromCol, toRow, toCol);
+
+                // Update consciousness for proletariat pawns
+                if (piece.class === 'proletariat' && piece.type === 'pawn') {
+                    const key = `${toRow},${toCol}`;
+                    this.pawnConsciousness[key] = (this.pawnConsciousness[key] || 0) + 1;
+                    
+                    if (this.pawnConsciousness[key] >= 3) {
+                        this.showMessage('🚩 Pawn achieved class consciousness! Can promote to any piece!');
+                        this.gameState.proletariatConsciousness++;
+                    }
+                }
+
+                // Switch turns
+                this.currentPlayer = this.currentPlayer === 'proletariat' ? 'bourgeoisie' : 'proletariat';
+
+                this.updateGameStatus();
+                this.checkVictoryConditions();
+            }
+
+            handleCapture(attacker, captured) {
+                if (attacker.class === 'proletariat' && captured.class === 'bourgeoisie') {
+                    this.gameState.revolutionPoints += 15;
+                    this.gameState.proletariatPower += 10;
+                    this.showMessage('🔥 Bourgeoisie piece captured! Revolution grows!');
+                } else if (attacker.class === 'bourgeoisie' && captured.class === 'proletariat') {
+                    this.gameState.bourgeoisieCapital += 20;
+                    this.gameState.oppressionLevel += 5;
+                    this.showMessage('💰 Proletariat suppressed! Capital increases!');
+                }
+            }
+
+            handleMoveEffects(piece, fromRow, fromCol, toRow, toCol) {
+                // Wage theft effect for bourgeoisie
+                if (piece.class === 'bourgeoisie') {
+                    this.checkWageTheft(toRow, toCol);
+                }
+
+                // Collective action check for proletariat
+                if (piece.class === 'proletariat') {
+                    this.checkCollectiveAction(toRow, toCol);
+                }
+            }
+
+            checkWageTheft(row, col) {
+                let stolen = 0;
+                for (let r = row - 2; r <= row + 2; r++) {
+                    for (let c = col - 2; c <= col + 2; c++) {
+                        if (r >= 0 && r < 8 && c >= 0 && c < 8 && 
+                            this.board[r][c] && this.board[r][c].class === 'proletariat') {
+                            stolen += 5;
+                        }
+                    }
+                }
+                if (stolen > 0) {
+                    this.gameState.bourgeoisieCapital += stolen;
+                    this.gameState.exploitationIndex += stolen / 5;
+                    this.showMessage(`💸 Wage theft! Stolen ${stolen} from nearby workers!`);
+                }
+            }
+
+            checkCollectiveAction(row, col) {
+                let adjacentWorkers = 0;
+                const directions = [[-1,-1], [-1,0], [-1,1], [0,-1], [0,1], [1,-1], [1,0], [1,1]];
+                
+                for (const [dr, dc] of directions) {
+                    const r = row + dr, c = col + dc;
+                    if (r >= 0 && r < 8 && c >= 0 && c < 8 && 
+                        this.board[r][c] && this.board[r][c].class === 'proletariat') {
+                        adjacentWorkers++;
+                    }
+                }
+
+                if (adjacentWorkers >= 2) {
+                    this.gameState.proletariatPower += adjacentWorkers * 2;
+                    this.showMessage(`✊ Collective action! Power increased by ${adjacentWorkers * 2}!`);
+                }
+            }
+
+            // Special Abilities
+            mobilizeWorkers() {
+                if (this.gameState.mobilizeUsed || this.currentPlayer !== 'proletariat') return;
+
+                let mobilized = 0;
+                for (let col = 0; col < 8; col++) {
+                    if (this.board[6][col] && this.board[6][col].type === 'pawn' && 
+                        this.board[6][col].class === 'proletariat' && !this.board[5][col]) {
+                        this.board[5][col] = this.board[6][col];
+                        this.board[6][col] = null;
+                        mobilized++;
+                    }
+                }
+
+                if (mobilized > 0) {
+                    this.gameState.mobilizeUsed = true;
+                    this.gameState.revolutionPoints += mobilized * 5;
+                    this.showMessage(`🚩 ${mobilized} workers mobilized! Revolution points increased!`);
+                    this.renderBoard();
+                    this.updateGameStatus();
+                }
+            }
+
+            seizeProductionMeans() {
+                if (this.gameState.seizeUsed >= this.gameState.maxSeizeUses || this.currentPlayer !== 'proletariat') return;
+
+                // Convert a random bourgeoisie piece to proletariat (excluding kings)
+                const bourgeoisPieces = [];
+                for (let row = 0; row < 8; row++) {
+                    for (let col = 0; col < 8; col++) {
+                        if (this.board[row][col] && 
+                            this.board[row][col].class === 'bourgeoisie' && 
+                            this.board[row][col].type !== 'king') {
+                            bourgeoisPieces.push({row, col});
+                        }
+                    }
+                }
+
+                if (bourgeoisPieces.length > 0) {
+                    const target = bourgeoisPieces[Math.floor(Math.random() * bourgeoisPieces.length)];
+                    this.board[target.row][target.col].class = 'proletariat';
+                    this.gameState.seizeUsed++;
+                    this.gameState.revolutionPoints += 25;
+                    this.showMessage('⚒️ Means of production seized! Piece converted to proletariat!');
+                    this.renderBoard();
+                    this.updateGameStatus();
+                } else {
+                    this.showMessage('⚒️ No bourgeoisie pieces available to seize (kings cannot be seized)!');
+                }
+            }
+
+            updateGameStatus() {
+                // Update revolution meter
+                const revolutionProgress = Math.min(100, this.gameState.revolutionPoints);
+                document.getElementById('revolution-progress').style.width = revolutionProgress + '%';
+
+                // Update status text
+                let statusText = '';
+                if (revolutionProgress < 25) statusText = 'The masses stir...';
+                else if (revolutionProgress < 50) statusText = 'Class consciousness rising!';
+                else if (revolutionProgress < 75) statusText = 'Revolutionary fervor building!';
+                else if (revolutionProgress < 100) statusText = 'Revolution imminent!';
+                else statusText = '🚩 REVOLUTION! 🚩';
+
+                document.getElementById('revolution-status').textContent = statusText;
+
+                // Update class status
+                document.getElementById('proletariat-consciousness').textContent = this.gameState.proletariatConsciousness;
+                document.getElementById('proletariat-power').textContent = this.gameState.proletariatPower;
+                document.getElementById('revolution-points').textContent = this.gameState.revolutionPoints;
+                document.getElementById('bourgeoisie-capital').textContent = this.gameState.bourgeoisieCapital;
+                document.getElementById('oppression-level').textContent = this.gameState.oppressionLevel;
+                document.getElementById('exploitation-index').textContent = this.gameState.exploitationIndex;
+
+                // Update turn indicator
+                const turnElement = document.getElementById('current-turn');
+                if (this.currentPlayer === 'proletariat') {
+                    turnElement.textContent = '🔨 Proletariat\'s Turn 🔨';
+                    turnElement.className = 'text-2xl font-bold text-orange-400';
+                } else {
+                    turnElement.textContent = '👑 Bourgeoisie\'s Turn 👑';
+                    turnElement.className = 'text-2xl font-bold text-blue-400';
+                }
+            }
+
+            checkVictoryConditions() {
+                // Traditional checkmate (simplified)
+                // Revolutionary victory
+                if (this.gameState.revolutionPoints >= 100) {
+                    const centerSquares = [[3,3], [3,4], [4,3], [4,4]];
+                    const proletariatControlled = centerSquares.filter(([r,c]) => 
+                        this.board[r][c] && this.board[r][c].class === 'proletariat'
+                    ).length;
+                    
+                    if (proletariatControlled >= 3) {
+                        this.showRevolutionAnnouncement('🚩 REVOLUTIONARY VICTORY! 🚩<br>The workers control the means of production!');
+                        return;
+                    }
+                }
+
+                // Counter-revolutionary victory
+                if (this.gameState.bourgeoisieCapital >= 300) {
+                    this.showRevolutionAnnouncement('👑 COUNTER-REVOLUTIONARY VICTORY! 👑<br>Capital has crushed the workers!');
+                    return;
+                }
+
+                // Class consciousness victory
+                let totalPieces = 0, consciousPieces = 0;
+                for (let row = 0; row < 8; row++) {
+                    for (let col = 0; col < 8; col++) {
+                        if (this.board[row][col]) {
+                            totalPieces++;
+                            if (this.board[row][col].class === 'proletariat' && 
+                                (this.board[row][col].piece !== '♟' || this.pawnConsciousness[`${row},${col}`] >= 3)) {
+                                consciousPieces++;
+                            }
+                        }
+                    }
+                }
+
+                if (consciousPieces >= totalPieces * 0.8) {
+                    this.showRevolutionAnnouncement('🧠 CLASS CONSCIOUSNESS VICTORY! 🧠<br>The workers have awakened!');
+                }
+            }
+
+            showMessage(message) {
+                document.getElementById('game-status').textContent = message;
+                setTimeout(() => {
+                    document.getElementById('game-status').textContent = 'Class struggle continues...';
+                }, 3000);
+            }
+
+            showRevolutionAnnouncement(message) {
+                const announcement = document.createElement('div');
+                announcement.className = 'revolution-announcement';
+                announcement.innerHTML = message;
+                document.body.appendChild(announcement);
+
+                setTimeout(() => {
+                    announcement.remove();
+                }, 5000);
+            }
+
+            setupEventListeners() {
+                document.getElementById('new-game').onclick = () => {
+                    this.gameState = {
+                        proletariatConsciousness: 0,
+                        proletariatPower: 0,
+                        revolutionPoints: 0,
+                        bourgeoisieCapital: 100,
+                        oppressionLevel: 0,
+                        exploitationIndex: 0,
+                        generalStrikeActive: false,
+                        striketurnsLeft: 0,
+                        mobilizeUsed: false,
+                        seizeUsed: 0,
+                        maxSeizeUses: 1
+                    };
+                    this.pawnConsciousness = {};
+                    this.privatePropery = {};
+                    this.currentPlayer = 'proletariat';
+                    this.selectedSquare = null;
+                    this.initializeBoard();
+                    this.renderBoard();
+                    this.updateGameStatus();
+                    this.showMessage('🚩 New revolution begins!');
+                };
+
+                document.getElementById('mobilize-workers').onclick = () => this.mobilizeWorkers();
+                document.getElementById('seize-means').onclick = () => this.seizeProductionMeans();
+            }
+        }
+
+        // Initialize game when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            const game = new CommunistChess();
+            window.communistChess = game; // For debugging
+        });
+    </script>
+</body>
+</html>
