@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="POTA02 Downloads - Assets, Projects, and Resources">
+  <title>Downloads — POTA02</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-dark: #0a0a0f;
+      --bg-purple: #0d0a1a;
+      --accent-purple: #8b5cf6;
+      --accent-pink: #d946ef;
+      --accent-blue: #06b6d4;
+      --accent-green: #10b981;
+      --text-primary: #ffffff;
+      --text-secondary: rgba(255, 255, 255, 0.7);
+      --text-muted: rgba(255, 255, 255, 0.5);
+      --glass: rgba(255, 255, 255, 0.03);
+      --glass-border: rgba(255, 255, 255, 0.08);
+      --glow-purple: rgba(139, 92, 246, 0.4);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg-dark);
+      color: var(--text-primary);
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+
+    /* Background Animation */
+    .bg-animation {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      overflow: hidden;
+    }
+
+    .bg-gradient {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(ellipse at 20% 20%, rgba(139, 92, 246, 0.12) 0%, transparent 50%),
+                  radial-gradient(ellipse at 80% 80%, rgba(217, 70, 239, 0.08) 0%, transparent 50%),
+                  linear-gradient(180deg, var(--bg-dark) 0%, var(--bg-purple) 50%, var(--bg-dark) 100%);
+    }
+
+    .orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      animation: float 25s infinite ease-in-out;
+    }
+
+    .orb-1 {
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, rgba(139, 92, 246, 0.2) 0%, transparent 70%);
+      top: -200px;
+      right: -100px;
+    }
+
+    .orb-2 {
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(217, 70, 239, 0.15) 0%, transparent 70%);
+      bottom: -100px;
+      left: -100px;
+      animation-delay: -12s;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      50% { transform: translate(20px, -20px) scale(1.03); }
+    }
+
+    /* Navigation */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      padding: 1.5rem 4rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: linear-gradient(180deg, rgba(10, 10, 15, 0.95) 0%, transparent 100%);
+      backdrop-filter: blur(10px);
+    }
+
+    .nav-logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      text-decoration: none;
+      letter-spacing: 0.1em;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+    }
+
+    .nav-links a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 0.95rem;
+      transition: color 0.3s ease;
+    }
+
+    .nav-links a:hover {
+      color: var(--text-primary);
+    }
+
+    /* Container */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 8rem 2rem 4rem;
+    }
+
+    /* Header */
+    .page-header {
+      text-align: center;
+      margin-bottom: 4rem;
+    }
+
+    .page-label {
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.3em;
+      color: var(--accent-purple);
+      margin-bottom: 1rem;
+      font-weight: 500;
+    }
+
+    .page-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.5rem, 5vw, 4rem);
+      font-weight: 500;
+      margin-bottom: 1rem;
+      letter-spacing: -0.02em;
+    }
+
+    .page-subtitle {
+      font-size: 1.15rem;
+      color: var(--text-secondary);
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    /* Featured Download */
+    .featured-download {
+      background: linear-gradient(135deg, rgba(139, 92, 246, 0.15) 0%, rgba(217, 70, 239, 0.1) 100%);
+      border: 1px solid rgba(139, 92, 246, 0.3);
+      border-radius: 24px;
+      padding: 3rem;
+      margin-bottom: 4rem;
+      display: flex;
+      align-items: center;
+      gap: 3rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .featured-download::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--accent-purple), var(--accent-pink));
+    }
+
+    .featured-badge {
+      position: absolute;
+      top: 1.5rem;
+      right: 1.5rem;
+      padding: 0.4rem 1rem;
+      background: var(--accent-purple);
+      border-radius: 50px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    .featured-icon {
+      width: 100px;
+      height: 100px;
+      background: linear-gradient(135deg, var(--accent-purple), var(--accent-pink));
+      border-radius: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3rem;
+      flex-shrink: 0;
+      box-shadow: 0 10px 40px var(--glow-purple);
+    }
+
+    .featured-info {
+      flex: 1;
+    }
+
+    .featured-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+    }
+
+    .featured-version {
+      display: inline-block;
+      padding: 0.3rem 0.8rem;
+      background: rgba(16, 185, 129, 0.2);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      border-radius: 50px;
+      font-size: 0.8rem;
+      color: var(--accent-green);
+      margin-bottom: 1rem;
+    }
+
+    .featured-description {
+      color: var(--text-secondary);
+      font-size: 1rem;
+      line-height: 1.7;
+      margin-bottom: 1.5rem;
+    }
+
+    .featured-meta {
+      display: flex;
+      gap: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .meta-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    .featured-action {
+      flex-shrink: 0;
+    }
+
+    .btn-download {
+      padding: 1.2rem 3rem;
+      background: var(--accent-purple);
+      color: var(--text-primary);
+      border: none;
+      border-radius: 12px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 8px 30px var(--glow-purple);
+    }
+
+    .btn-download:hover {
+      background: #9d6eff;
+      transform: translateY(-3px);
+      box-shadow: 0 12px 40px var(--glow-purple);
+    }
+
+    /* Section Title */
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.75rem;
+      font-weight: 500;
+      margin-bottom: 2rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .section-title::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--glass-border);
+    }
+
+    /* Downloads Grid */
+    .downloads-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 4rem;
+    }
+
+    .download-card {
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      padding: 1.75rem;
+      transition: all 0.4s ease;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .download-card:hover {
+      transform: translateY(-5px);
+      border-color: rgba(139, 92, 246, 0.3);
+      box-shadow: 0 15px 50px rgba(139, 92, 246, 0.15);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .card-icon {
+      width: 48px;
+      height: 48px;
+      background: linear-gradient(135deg, rgba(139, 92, 246, 0.2) 0%, rgba(217, 70, 239, 0.1) 100%);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      flex-shrink: 0;
+    }
+
+    .card-title-group {
+      flex: 1;
+    }
+
+    .card-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.25rem;
+      font-weight: 500;
+      margin-bottom: 0.25rem;
+    }
+
+    .card-type {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .card-description {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      line-height: 1.7;
+      margin-bottom: 1.5rem;
+      flex: 1;
+    }
+
+    .card-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .card-size {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .btn-card-download {
+      padding: 0.6rem 1.5rem;
+      background: rgba(139, 92, 246, 0.15);
+      color: var(--accent-purple);
+      border: 1px solid rgba(139, 92, 246, 0.3);
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+
+    .btn-card-download:hover {
+      background: var(--accent-purple);
+      color: var(--text-primary);
+      border-color: var(--accent-purple);
+    }
+
+    /* Footer */
+    footer {
+      padding: 3rem 2rem;
+      border-top: 1px solid var(--glass-border);
+      text-align: center;
+    }
+
+    footer p {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    footer a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+
+    footer a:hover {
+      color: var(--text-primary);
+    }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+      .featured-download {
+        flex-direction: column;
+        text-align: center;
+        padding: 2.5rem;
+      }
+
+      .featured-meta {
+        justify-content: center;
+      }
+
+      nav {
+        padding: 1rem 2rem;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        padding: 7rem 1rem 3rem;
+      }
+
+      .downloads-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .nav-links {
+        display: none;
+      }
+
+      .featured-icon {
+        width: 80px;
+        height: 80px;
+        font-size: 2.5rem;
+      }
+
+      .featured-title {
+        font-size: 1.5rem;
+      }
+
+      .btn-download {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+
+    /* Fade in animation */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(30px);
+      animation: fadeInUp 0.6s ease forwards;
+    }
+
+    .fade-in:nth-child(1) { animation-delay: 0.1s; }
+    .fade-in:nth-child(2) { animation-delay: 0.2s; }
+    .fade-in:nth-child(3) { animation-delay: 0.3s; }
+    .fade-in:nth-child(4) { animation-delay: 0.4s; }
+
+    @keyframes fadeInUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Background Animation -->
+  <div class="bg-animation">
+    <div class="bg-gradient"></div>
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+  </div>
+
+  <!-- Navigation -->
+  <nav>
+    <a href="index.html" class="nav-logo">POTA02</a>
+    <div class="nav-links">
+      <a href="index.html#games">Games</a>
+      <a href="index.html#studio">Studio</a>
+      <a href="index.html#technology">Technology</a>
+      <a href="index.html#contact">Contact</a>
+    </div>
+  </nav>
+
+  <div class="container">
+    <!-- Header -->
+    <header class="page-header fade-in">
+      <p class="page-label">Resources</p>
+      <h1 class="page-title">Downloads</h1>
+      <p class="page-subtitle">Get our latest releases, projects, and resources. All downloads are free and open source.</p>
+    </header>
+
+    <!-- Featured Download -->
+    <div class="featured-download fade-in">
+      <span class="featured-badge">Latest Release</span>
+      <div class="featured-icon">💬</div>
+      <div class="featured-info">
+        <h2 class="featured-title">PRONOTE</h2>
+        <span class="featured-version">v1.5.3 Stable</span>
+        <p class="featured-description">Our flagship LAN chatting application. Connect with anyone on your local network instantly, no internet required. End-to-end encrypted, fast, and reliable.</p>
+        <div class="featured-meta">
+          <span class="meta-item">💻 Windows</span>
+          <span class="meta-item">📦 Installer</span>
+          <span class="meta-item">🔒 Secure</span>
+        </div>
+      </div>
+      <div class="featured-action">
+        <a href="down.html" class="btn-download">
+          <span>Download</span>
+          <span>↓</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- Other Downloads -->
+    <h2 class="section-title fade-in">Other Projects</h2>
+    <div class="downloads-grid">
+      <div class="download-card fade-in">
+        <div class="card-header">
+          <div class="card-icon">📁</div>
+          <div class="card-title-group">
+            <h3 class="card-title">Download RAM</h3>
+            <span class="card-type">ZIP Archive</span>
+          </div>
+        </div>
+        <p class="card-description">Main download RAM project package. A utility tool for system optimization and memory management.</p>
+        <div class="card-footer">
+          <span class="card-size">Source Code</span>
+          <a href="assets/download_ram-main.zip" class="btn-card-download" download>Download</a>
+        </div>
+      </div>
+
+      <div class="download-card fade-in">
+        <div class="card-header">
+          <div class="card-icon">📁</div>
+          <div class="card-title-group">
+            <h3 class="card-title">Download RAM 2</h3>
+            <span class="card-type">ZIP Archive</span>
+          </div>
+        </div>
+        <p class="card-description">Updated and improved version of the Download RAM project with enhanced features and better performance.</p>
+        <div class="card-footer">
+          <span class="card-size">Source Code</span>
+          <a href="assets/download_ram_2-main.zip" class="btn-card-download" download>Download</a>
+        </div>
+      </div>
+
+      <div class="download-card fade-in">
+        <div class="card-header">
+          <div class="card-icon">📁</div>
+          <div class="card-title-group">
+            <h3 class="card-title">MYWO2</h3>
+            <span class="card-type">ZIP Archive</span>
+          </div>
+        </div>
+        <p class="card-description">MYWO2 project package. Explore, modify, and learn from this open-source project.</p>
+        <div class="card-footer">
+          <span class="card-size">Source Code</span>
+          <a href="assets/mywo2-main.zip" class="btn-card-download" download>Download</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <p>&copy; 2025 POTA02. All rights reserved. <a href="index.html">Back to Home</a></p>
+  </footer>
+
+  <script>
+    // Smooth scroll for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+          });
+        }
+      });
+    });
+  </script>
+</body>
+</html>

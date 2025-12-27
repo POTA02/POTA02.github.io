@@ -3,10 +3,24 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="POTA02 - A small studio creating PRONOTE, a LAN chat application">
-  <title>POTA02 - Small Developer Studio</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <meta name="description" content="POTA02 - Independent game development studio crafting immersive experiences">
+  <title>POTA02 — Indie Game Studio</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
   <style>
+    :root {
+      --bg-dark: #0a0a0f;
+      --bg-purple: #0d0a1a;
+      --accent-purple: #8b5cf6;
+      --accent-pink: #d946ef;
+      --accent-blue: #06b6d4;
+      --text-primary: #ffffff;
+      --text-secondary: rgba(255, 255, 255, 0.7);
+      --text-muted: rgba(255, 255, 255, 0.5);
+      --glass: rgba(255, 255, 255, 0.03);
+      --glass-border: rgba(255, 255, 255, 0.08);
+      --glow-purple: rgba(139, 92, 246, 0.4);
+    }
+
     * {
       margin: 0;
       padding: 0;
@@ -18,416 +32,1090 @@
     }
 
     body {
-      font-family: 'Poppins', sans-serif;
-      background: linear-gradient(180deg, #001a33 0%, #003d66 50%, #0066a8 100%);
-      background-attachment: fixed;
-      min-height: 100vh;
-      color: #ffffff;
+      font-family: 'Inter', sans-serif;
+      background: var(--bg-dark);
+      color: var(--text-primary);
       overflow-x: hidden;
+      line-height: 1.6;
     }
 
-    /* Scroll Animation Classes */
-    .scroll-section {
+    /* Abstract Background Animation */
+    .bg-animation {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      overflow: hidden;
+    }
+
+    .bg-gradient {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(ellipse at 20% 20%, rgba(139, 92, 246, 0.15) 0%, transparent 50%),
+                  radial-gradient(ellipse at 80% 80%, rgba(217, 70, 239, 0.1) 0%, transparent 50%),
+                  radial-gradient(ellipse at 50% 50%, rgba(6, 182, 212, 0.05) 0%, transparent 70%),
+                  linear-gradient(180deg, var(--bg-dark) 0%, var(--bg-purple) 50%, var(--bg-dark) 100%);
+    }
+
+    .orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      animation: float 20s infinite ease-in-out;
+    }
+
+    .orb-1 {
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(139, 92, 246, 0.3) 0%, transparent 70%);
+      top: -200px;
+      left: -200px;
+      animation-delay: 0s;
+    }
+
+    .orb-2 {
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, rgba(217, 70, 239, 0.2) 0%, transparent 70%);
+      bottom: -150px;
+      right: -150px;
+      animation-delay: -7s;
+    }
+
+    .orb-3 {
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(6, 182, 212, 0.15) 0%, transparent 70%);
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      animation-delay: -14s;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      25% { transform: translate(30px, -30px) scale(1.05); }
+      50% { transform: translate(-20px, 20px) scale(0.95); }
+      75% { transform: translate(20px, 10px) scale(1.02); }
+    }
+
+    /* Navigation */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      padding: 1.5rem 4rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: linear-gradient(180deg, rgba(10, 10, 15, 0.9) 0%, transparent 100%);
+      backdrop-filter: blur(10px);
+      transition: all 0.3s ease;
+    }
+
+    .nav-logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      text-decoration: none;
+      letter-spacing: 0.1em;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 3rem;
+    }
+
+    .nav-links a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 0.95rem;
+      font-weight: 400;
+      transition: color 0.3s ease;
+      letter-spacing: 0.02em;
+    }
+
+    .nav-links a:hover {
+      color: var(--text-primary);
+    }
+
+    .nav-cta {
+      padding: 0.75rem 1.75rem;
+      background: var(--accent-purple);
+      color: var(--text-primary) !important;
+      border-radius: 8px;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 20px var(--glow-purple);
+    }
+
+    .nav-cta:hover {
+      background: #9d6eff;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 30px var(--glow-purple);
+    }
+
+    .nav-toggle {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+    }
+
+    .nav-toggle span {
+      width: 25px;
+      height: 2px;
+      background: var(--text-primary);
+      transition: all 0.3s ease;
+    }
+
+    /* Hero Section */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 8rem 2rem 4rem;
+      position: relative;
+    }
+
+    .hero-content {
+      max-width: 900px;
+      z-index: 1;
+    }
+
+    .hero h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(3rem, 8vw, 5.5rem);
+      font-weight: 500;
+      line-height: 1.1;
+      margin-bottom: 1.5rem;
+      letter-spacing: -0.02em;
+    }
+
+    .hero h1 .highlight {
+      background: linear-gradient(135deg, var(--accent-purple) 0%, var(--accent-pink) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-subtitle {
+      font-size: 1.25rem;
+      color: var(--text-secondary);
+      max-width: 600px;
+      margin: 0 auto 3rem;
+      font-weight: 300;
+      line-height: 1.8;
+    }
+
+    .hero-ctas {
+      display: flex;
+      gap: 1.5rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .btn-primary {
+      padding: 1rem 2.5rem;
+      background: var(--accent-purple);
+      color: var(--text-primary);
+      border: none;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 4px 24px var(--glow-purple);
+      letter-spacing: 0.02em;
+    }
+
+    .btn-primary:hover {
+      background: #9d6eff;
+      transform: translateY(-3px);
+      box-shadow: 0 8px 40px var(--glow-purple);
+    }
+
+    .btn-secondary {
+      padding: 1rem 2.5rem;
+      background: var(--glass);
+      color: var(--text-primary);
+      border: 1px solid var(--glass-border);
+      border-radius: 10px;
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+      letter-spacing: 0.02em;
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(255, 255, 255, 0.2);
+      transform: translateY(-2px);
+    }
+
+    .scroll-indicator {
+      position: absolute;
+      bottom: 3rem;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      animation: bounce 2s infinite;
+    }
+
+    .scroll-indicator svg {
+      width: 24px;
+      height: 24px;
+      stroke: var(--text-muted);
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateX(-50%) translateY(0); }
+      50% { transform: translateX(-50%) translateY(10px); }
+    }
+
+    /* Section Styles */
+    section {
+      padding: 8rem 4rem;
+      position: relative;
+    }
+
+    .section-header {
+      text-align: center;
+      margin-bottom: 5rem;
+    }
+
+    .section-label {
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.3em;
+      color: var(--accent-purple);
+      margin-bottom: 1rem;
+      font-weight: 500;
+    }
+
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-weight: 500;
+      letter-spacing: -0.02em;
+    }
+
+    /* Featured Games */
+    .games-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 2rem;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .game-card {
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      border-radius: 20px;
+      overflow: hidden;
+      transition: all 0.4s ease;
+      position: relative;
+    }
+
+    .game-card:hover {
+      transform: translateY(-8px);
+      border-color: rgba(139, 92, 246, 0.3);
+      box-shadow: 0 20px 60px rgba(139, 92, 246, 0.2);
+    }
+
+    .game-image {
+      width: 100%;
+      height: 220px;
+      background: linear-gradient(135deg, rgba(139, 92, 246, 0.2) 0%, rgba(217, 70, 239, 0.1) 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .game-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .game-image::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 50%;
+      background: linear-gradient(transparent, var(--bg-dark));
+    }
+
+    .game-info {
+      padding: 1.75rem;
+    }
+
+    .game-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem;
+      margin-bottom: 0.75rem;
+      font-weight: 500;
+    }
+
+    .game-description {
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+      line-height: 1.7;
+      margin-bottom: 1.25rem;
+    }
+
+    .game-meta {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-bottom: 1rem;
+    }
+
+    .game-tag {
+      padding: 0.4rem 0.9rem;
+      background: rgba(139, 92, 246, 0.15);
+      border: 1px solid rgba(139, 92, 246, 0.3);
+      border-radius: 50px;
+      font-size: 0.8rem;
+      color: var(--accent-purple);
+      font-weight: 500;
+    }
+
+    .game-actions {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 1rem;
+    }
+
+    .btn-game-download {
+      padding: 0.65rem 1.5rem;
+      background: var(--accent-purple);
+      color: var(--text-primary);
+      border: none;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 20px var(--glow-purple);
+    }
+
+    .btn-game-download:hover {
+      background: #9d6eff;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 30px var(--glow-purple);
+    }
+
+    .platform-icons {
+      display: flex;
+      gap: 0.75rem;
+    }
+
+    .platform-icon {
+      width: 28px;
+      height: 28px;
+      background: var(--glass);
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+    }
+
+    /* Capabilities */
+    .capabilities-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .capability-card {
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      padding: 2.5rem;
+      transition: all 0.4s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .capability-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--accent-purple), var(--accent-pink));
       opacity: 0;
-      transform: translateY(50px);
-      transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+      transition: opacity 0.3s ease;
     }
 
-    .scroll-section.visible {
+    .capability-card:hover {
+      transform: translateY(-5px);
+      border-color: rgba(139, 92, 246, 0.2);
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .capability-card:hover::before {
+      opacity: 1;
+    }
+
+    .capability-icon {
+      width: 56px;
+      height: 56px;
+      background: linear-gradient(135deg, rgba(139, 92, 246, 0.2) 0%, rgba(217, 70, 239, 0.1) 100%);
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1.5rem;
+      font-size: 1.5rem;
+    }
+
+    .capability-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.35rem;
+      margin-bottom: 1rem;
+      font-weight: 500;
+    }
+
+    .capability-description {
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+      line-height: 1.8;
+    }
+
+    /* Technology */
+    .tech-content {
+      max-width: 1000px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: center;
+    }
+
+    .tech-text h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      margin-bottom: 1.5rem;
+      font-weight: 500;
+    }
+
+    .tech-text p {
+      color: var(--text-secondary);
+      line-height: 1.9;
+      margin-bottom: 1rem;
+    }
+
+    .tech-features {
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+      margin-top: 2rem;
+    }
+
+    .tech-feature {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .tech-feature-icon {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, rgba(139, 92, 246, 0.2) 0%, rgba(6, 182, 212, 0.1) 100%);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+    }
+
+    .tech-feature span {
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+    }
+
+    .tech-visual {
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      border-radius: 20px;
+      padding: 3rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .tech-visual::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: conic-gradient(from 0deg, transparent, rgba(139, 92, 246, 0.1), transparent 30%);
+      animation: rotate 10s linear infinite;
+    }
+
+    @keyframes rotate {
+      100% { transform: rotate(360deg); }
+    }
+
+    .tech-visual-content {
+      position: relative;
+      z-index: 1;
+    }
+
+    .tech-visual h4 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .tech-visual p {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+    }
+
+    /* Stats */
+    .stats-section {
+      background: var(--glass);
+      border-top: 1px solid var(--glass-border);
+      border-bottom: 1px solid var(--glass-border);
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 2rem;
+      max-width: 1000px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .stat-item {
+      padding: 1rem;
+    }
+
+    .stat-number {
+      font-family: 'Playfair Display', serif;
+      font-size: 3.5rem;
+      font-weight: 500;
+      background: linear-gradient(135deg, var(--accent-purple) 0%, var(--accent-pink) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      line-height: 1;
+      margin-bottom: 0.5rem;
+    }
+
+    .stat-label {
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+      font-weight: 400;
+    }
+
+    /* CTA Section */
+    .cta-section {
+      text-align: center;
+      padding: 10rem 2rem;
+    }
+
+    .cta-section h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-weight: 500;
+      margin-bottom: 2rem;
+      letter-spacing: -0.02em;
+    }
+
+    .cta-section p {
+      color: var(--text-secondary);
+      font-size: 1.15rem;
+      max-width: 500px;
+      margin: 0 auto 3rem;
+    }
+
+    /* Footer */
+    footer {
+      padding: 4rem;
+      border-top: 1px solid var(--glass-border);
+      background: rgba(0, 0, 0, 0.3);
+    }
+
+    .footer-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 2rem;
+    }
+
+    .footer-logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.25rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 2rem;
+    }
+
+    .footer-links a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: color 0.3s ease;
+    }
+
+    .footer-links a:hover {
+      color: var(--text-primary);
+    }
+
+    .social-links {
+      display: flex;
+      gap: 1rem;
+    }
+
+    .social-link {
+      width: 40px;
+      height: 40px;
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-secondary);
+      text-decoration: none;
+      transition: all 0.3s ease;
+      font-size: 1.1rem;
+    }
+
+    .social-link:hover {
+      background: rgba(139, 92, 246, 0.2);
+      border-color: rgba(139, 92, 246, 0.3);
+      color: var(--text-primary);
+      transform: translateY(-2px);
+    }
+
+    .footer-bottom {
+      max-width: 1200px;
+      margin: 3rem auto 0;
+      padding-top: 2rem;
+      border-top: 1px solid var(--glass-border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .footer-bottom p {
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
+
+    .footer-bottom a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.85rem;
+      transition: color 0.3s ease;
+    }
+
+    .footer-bottom a:hover {
+      color: var(--text-secondary);
+    }
+
+    /* Scroll Animations */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+
+    .fade-in.visible {
       opacity: 1;
       transform: translateY(0);
     }
 
-    /* Logo Section */
-    .logo-section {
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-      gap: 3rem;
-      animation: fadeIn 2s ease-out;
-      padding: 2rem;
-    }
-
-    .logo {
-      font-size: 9rem;
-      font-weight: 800;
-      letter-spacing: 0.15em;
-      color: #ffffff;
-      text-shadow: 0 2px 40px rgba(102, 217, 255, 0.3);
-    }
-
-    .studio-text {
-      font-size: 1.8rem;
-      font-weight: 400;
-      letter-spacing: 0.3em;
-      text-transform: uppercase;
-      color: rgba(255, 255, 255, 0.7);
-      transition: opacity 0.3s ease, transform 0.3s ease;
-    }
-
-    /* Download Button Section */
-    .download-button-section {
-      min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 2rem;
-    }
-
-    .download-btn-main {
-      padding: 1.5rem 4.5rem;
-      font-size: 1.3rem;
-      font-weight: 600;
-      color: #ffffff;
-      background: rgba(102, 217, 255, 0.15);
-      backdrop-filter: blur(20px);
-      border: 2px solid rgba(255, 255, 255, 0.3);
-      border-radius: 12px;
-      cursor: pointer;
-      text-decoration: none;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-      display: inline-block;
-      letter-spacing: 0.05em;
-    }
-
-    .download-btn-main:hover {
-      background: rgba(102, 217, 255, 0.25);
-      transform: translateY(-2px);
-      box-shadow: 0 12px 48px rgba(102, 217, 255, 0.3);
-      border-color: rgba(255, 255, 255, 0.5);
-    }
-
-    /* Feature Section with Image */
-    .feature-section {
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      padding: 6rem 4rem;
-      gap: 6rem;
-      max-width: 1400px;
-      margin: 0 auto;
-    }
-
-    .feature-image {
-      flex: 1;
-      max-width: 450px;
-    }
-
-    .feature-image img {
-      width: 100%;
-      height: auto;
-      border-radius: 16px;
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      transition: transform 0.4s ease;
-    }
-
-    .feature-image img:hover {
-      transform: scale(1.02);
-    }
-
-    .feature-content {
-      flex: 1;
-      padding: 2rem;
-    }
-
-    .feature-content h2 {
-      font-size: 2.5rem;
-      margin-bottom: 2rem;
-      color: #ffffff;
-      font-weight: 600;
-      letter-spacing: -0.02em;
-    }
-
-    .feature-content p {
-      font-size: 1.15rem;
-      line-height: 2;
-      color: rgba(255, 255, 255, 0.8);
-      font-weight: 400;
-    }
-
-    /* Host or Join Section */
-    .host-join-section {
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      padding: 6rem 2rem;
-      text-align: center;
-      max-width: 1400px;
-      margin: 0 auto;
-    }
-
-    .host-join-section h2 {
-      font-size: 2.5rem;
-      font-weight: 600;
-      margin-bottom: 4rem;
-      color: #ffffff;
-      letter-spacing: -0.02em;
-    }
-
-    .host-join-images {
-      display: flex;
-      gap: 3rem;
-      flex-wrap: wrap;
-      justify-content: center;
-    }
-
-    .host-join-images img {
-      width: 450px;
-      height: auto;
-      border-radius: 16px;
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      transition: transform 0.4s ease;
-    }
-
-    .host-join-images img:hover {
-      transform: translateY(-8px);
-      box-shadow: 0 24px 72px rgba(0, 0, 0, 0.4);
-    }
-
-    /* Slogan Section */
-    .slogan-section {
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-      padding: 6rem 2rem;
-      max-width: 1000px;
-      margin: 0 auto;
-    }
-
-    .slogan {
-      font-size: 3rem;
-      font-weight: 600;
-      letter-spacing: -0.02em;
-      color: #ffffff;
-      margin-bottom: 2rem;
-    }
-
-    .slogan-description {
-      font-size: 1.15rem;
-      max-width: 700px;
-      line-height: 2;
-      color: rgba(255, 255, 255, 0.7);
-      margin-top: 1rem;
-      font-weight: 400;
-    }
-
-    /* Final Download Section */
-    .final-download-section {
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-      padding: 6rem 2rem;
-      background: rgba(0, 20, 40, 0.3);
-      backdrop-filter: blur(10px);
-    }
-
-    .final-download-section h2 {
-      font-size: 2.5rem;
-      margin-bottom: 3rem;
-      color: #ffffff;
-      font-weight: 600;
-      letter-spacing: -0.02em;
-    }
-
-    .final-download-btn {
-      padding: 1.5rem 4.5rem;
-      font-size: 1.3rem;
-      font-weight: 600;
-      color: #ffffff;
-      background: #0078d4;
-      border: none;
-      border-radius: 12px;
-      cursor: pointer;
-      text-decoration: none;
-      box-shadow: 0 8px 32px rgba(0, 120, 212, 0.4);
-      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-      display: inline-block;
-      letter-spacing: 0.05em;
-    }
-
-    .final-download-btn:hover {
-      background: #1984d8;
-      transform: translateY(-2px);
-      box-shadow: 0 12px 48px rgba(0, 120, 212, 0.5);
-    }
-
-    .version-text {
-      font-size: 0.95rem;
-      margin-top: 1.5rem;
-      color: rgba(255, 255, 255, 0.5);
-      font-weight: 400;
-    }
-
-    /* Animations */
-    @keyframes fadeIn {
-      from {
-        opacity: 0;
-      }
-      to {
-        opacity: 1;
-      }
-    }
-
-    /* Responsive Design */
+    /* Responsive */
     @media (max-width: 1024px) {
-      .feature-section {
-        flex-direction: column;
-        padding: 2rem;
+      nav {
+        padding: 1.25rem 2rem;
       }
 
-      .feature-image {
-        max-width: 100%;
+      section {
+        padding: 5rem 2rem;
       }
 
-      .host-join-images img {
-        width: 100%;
-        max-width: 400px;
+      .tech-content {
+        grid-template-columns: 1fr;
+        gap: 3rem;
+      }
+
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
       }
     }
 
     @media (max-width: 768px) {
-      .logo {
-        font-size: 5rem;
+      .nav-links {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: rgba(10, 10, 15, 0.98);
+        backdrop-filter: blur(20px);
+        flex-direction: column;
+        padding: 2rem;
+        gap: 1.5rem;
+        border-bottom: 1px solid var(--glass-border);
       }
 
-      .studio-text {
-        font-size: 1.8rem;
+      .nav-links.active {
+        display: flex;
       }
 
-      .download-btn-main {
-        font-size: 1.5rem;
-        padding: 1.5rem 3rem;
+      .nav-toggle {
+        display: flex;
       }
 
-      .feature-content h2 {
-        font-size: 2rem;
+      .hero {
+        padding: 7rem 1.5rem 3rem;
       }
 
-      .feature-content p {
-        font-size: 1.1rem;
+      .hero-ctas {
+        flex-direction: column;
+        align-items: center;
       }
 
-      .host-join-section h2 {
+      .games-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .capabilities-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .stats-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 1.5rem;
+      }
+
+      .stat-number {
         font-size: 2.5rem;
       }
 
-      .slogan {
-        font-size: 2.5rem;
+      .footer-content {
+        flex-direction: column;
+        text-align: center;
       }
 
-      .slogan-description {
-        font-size: 1.1rem;
+      .footer-links {
+        flex-wrap: wrap;
+        justify-content: center;
       }
 
-      .final-download-btn {
-        font-size: 1.5rem;
-        padding: 1.5rem 3rem;
+      .footer-bottom {
+        flex-direction: column;
+        text-align: center;
       }
     }
 
     @media (max-width: 480px) {
-      .logo {
-        font-size: 3.5rem;
+      .hero h1 {
+        font-size: 2.5rem;
       }
 
-      .studio-text {
-        font-size: 1.3rem;
+      .section-title {
+        font-size: 1.75rem;
       }
 
-      .download-btn-main {
-        font-size: 1.2rem;
-        padding: 1rem 2rem;
+      section {
+        padding: 4rem 1rem;
       }
 
-      .slogan {
-        font-size: 2rem;
-        padding: 0 1rem;
+      .capability-card {
+        padding: 1.75rem;
       }
 
-      .slogan-description {
-        font-size: 1rem;
-      }
-
-      .final-download-btn {
-        font-size: 1.2rem;
-        padding: 1rem 2rem;
+      .cta-section {
+        padding: 6rem 1rem;
       }
     }
   </style>
 </head>
 <body>
-  <!-- Logo Section -->
-  <section class="logo-section">
-    <h1 class="logo">POTA02</h1>
-    <p class="studio-text" id="studioText">a small studio</p>
-  </section>
+  <!-- Background Animation -->
+  <div class="bg-animation">
+    <div class="bg-gradient"></div>
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+  </div>
 
-  <!-- Download Button Section -->
-  <section class="download-button-section scroll-section">
-    <a href="#final-download" class="download-btn-main">Download</a>
-  </section>
-
-  <!-- Start Screen Feature Section -->
-  <section class="feature-section scroll-section">
-    <div class="feature-image">
-      <img src="assets/start_screen.png" alt="PRONOTE Start Screen">
+  <!-- Navigation -->
+  <nav>
+    <a href="#" class="nav-logo">POTA02</a>
+    <div class="nav-links" id="navLinks">
+      <a href="#games">Games</a>
+      <a href="#studio">Studio</a>
+      <a href="#technology">Technology</a>
+      <a href="assets.html">Downloads</a>
+      <a href="#contact" class="nav-cta">Contact Us</a>
     </div>
-    <div class="feature-content">
-      <h2>Welcome to PRONOTE</h2>
-      <p>
-        Experience seamless local area network communication with PRONOTE. 
-        Our intuitive start screen welcomes you to a world of easy, secure LAN chatting. 
-        Connect with anyone on your network instantly, no internet required. 
-        Perfect for offices, schools, and home networks.
-      </p>
+    <div class="nav-toggle" id="navToggle">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-content">
+      <h1>We Build <span class="highlight">Worlds</span> Worth Exploring.</h1>
+      <p class="hero-subtitle">Narrative-driven experiences, handcrafted systems, and unforgettable atmospheres. We're an indie studio passionate about creating games that stay with you.</p>
+      <div class="hero-ctas">
+        <a href="#games" class="btn-primary">Explore Our Games</a>
+        <a href="assets.html" class="btn-secondary">Downloads & Press Kit</a>
+      </div>
+    </div>
+    <div class="scroll-indicator">
+      <span>Scroll to discover</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M7 13l5 5 5-5M7 6l5 5 5-5"/>
+      </svg>
     </div>
   </section>
 
-  <!-- Host or Join Section -->
-  <section class="host-join-section scroll-section">
-    <h2>Host or Join on a network</h2>
-    <div class="host-join-images">
-      <img src="assets/easy_login.png" alt="Easy Login">
-      <img src="assets/simple_setup.png" alt="Simple Setup">
+  <!-- Featured Projects -->
+  <section id="games">
+    <div class="section-header fade-in">
+      <p class="section-label">Featured Projects</p>
+      <h2 class="section-title">Our Creations</h2>
+    </div>
+    <div class="games-grid">
+      <div class="game-card fade-in">
+        <div class="game-image">
+          <img src="assets/start_screen.PNG" alt="PRONOTE">
+        </div>
+        <div class="game-info">
+          <h3 class="game-title">PRONOTE</h3>
+          <p class="game-description">A sleek and secure LAN messaging application designed for seamless local network communication. Connect instantly without internet.</p>
+          <div class="game-meta">
+            <span class="game-tag">Messaging</span>
+            <span class="game-tag">Chat App</span>
+            <span class="game-tag">LAN</span>
+          </div>
+          <div class="game-actions">
+            <a href="down.html" class="btn-game-download">Download Now</a>
+            <div class="platform-icons">
+              <div class="platform-icon">💻</div>
+              <div class="platform-icon">🖥️</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="game-card fade-in">
+        <div class="game-image">
+          <img src="assets/demo.PNG" alt="Coming Soon">
+        </div>
+        <div class="game-info">
+          <h3 class="game-title">Coming Soon</h3>
+          <p class="game-description">Our next project is in active development. Stay tuned for announcements about our upcoming release.</p>
+          <div class="game-meta">
+            <span class="game-tag">In Development</span>
+          </div>
+          <div class="platform-icons">
+            <div class="platform-icon">🎮</div>
+          </div>
+        </div>
+      </div>
     </div>
   </section>
 
-  <!-- Slogan Section -->
-  <section class="slogan-section scroll-section">
-    <h2 class="slogan">We Keep improving</h2>
-    <p class="slogan-description">
-      PRONOTE is constantly evolving with new features, performance enhancements, and bug fixes. 
-      We listen to our community and work tirelessly to make your LAN chatting experience better with every update. 
-      Your feedback drives our innovation, and we're committed to delivering the best local network communication tool possible.
-    </p>
+  <!-- Studio Capabilities -->
+  <section id="studio">
+    <div class="section-header fade-in">
+      <p class="section-label">What We Do</p>
+      <h2 class="section-title">Our Capabilities</h2>
+    </div>
+    <div class="capabilities-grid">
+      <div class="capability-card fade-in">
+        <div class="capability-icon">🌍</div>
+        <h3 class="capability-title">World Building & Design</h3>
+        <p class="capability-description">We craft immersive environments and narratives that draw players in. Every detail is intentional, every story meaningful.</p>
+      </div>
+      <div class="capability-card fade-in">
+        <div class="capability-icon">⚙️</div>
+        <h3 class="capability-title">Systems & Mechanics</h3>
+        <p class="capability-description">Clean, responsive gameplay systems that feel intuitive yet deep. We balance accessibility with meaningful complexity.</p>
+      </div>
+      <div class="capability-card fade-in">
+        <div class="capability-icon">🎨</div>
+        <h3 class="capability-title">Technical Art</h3>
+        <p class="capability-description">Visual styles that serve the experience. From stylized aesthetics to polished UI, we bridge art and technology.</p>
+      </div>
+      <div class="capability-card fade-in">
+        <div class="capability-icon">🔧</div>
+        <h3 class="capability-title">Custom Tools & Engines</h3>
+        <p class="capability-description">When existing solutions don't fit, we build our own. Efficient workflows and purpose-built technology.</p>
+      </div>
+    </div>
   </section>
 
-  <!-- Final Download Section -->
-  <section id="final-download" class="final-download-section scroll-section">
-    <h2>Download PRONOTE</h2>
-    <a href="down.html" class="final-download-btn">Download v1.5.2</a>
-    <p class="version-text">PRONOTE 1.5.2.exe</p>
+  <!-- Technology -->
+  <section id="technology">
+    <div class="section-header fade-in">
+      <p class="section-label">Our Craft</p>
+      <h2 class="section-title">Technology & Approach</h2>
+    </div>
+    <div class="tech-content fade-in">
+      <div class="tech-text">
+        <h3>Built for Performance</h3>
+        <p>We prioritize clean architecture, efficient code, and scalable solutions. Our applications are designed to run smoothly across a variety of hardware configurations.</p>
+        <p>From low-level optimizations to high-level design patterns, every technical decision serves the end-user experience.</p>
+        <div class="tech-features">
+          <div class="tech-feature">
+            <div class="tech-feature-icon">⚡</div>
+            <span>Optimized Performance</span>
+          </div>
+          <div class="tech-feature">
+            <div class="tech-feature-icon">🔄</div>
+            <span>Cross-Platform Support</span>
+          </div>
+          <div class="tech-feature">
+            <div class="tech-feature-icon">📦</div>
+            <span>Modular Architecture</span>
+          </div>
+          <div class="tech-feature">
+            <div class="tech-feature-icon">🛡️</div>
+            <span>Security First</span>
+          </div>
+        </div>
+      </div>
+      <div class="tech-visual">
+        <div class="tech-visual-content">
+          <h4>POTA02 Engine</h4>
+          <p>Custom-built solutions for unique challenges</p>
+        </div>
+      </div>
+    </div>
   </section>
+
+  <!-- Stats -->
+  <section class="stats-section">
+    <div class="stats-grid fade-in">
+      <div class="stat-item">
+        <div class="stat-number">1+</div>
+        <div class="stat-label">Years Active</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">3</div>
+        <div class="stat-label">Projects Shipped</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">10K+</div>
+        <div class="stat-label">Downloads</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">∞</div>
+        <div class="stat-label">Ideas Brewing</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-section" id="contact">
+    <div class="fade-in">
+      <h2>Let's Create Something<br>Players Remember.</h2>
+      <p>Interested in collaborating, publishing, or just want to say hello?</p>
+      <a href="mailto:contact@pota02.com" class="btn-primary">Get in Touch</a>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-content">
+      <div class="footer-logo">POTA02</div>
+      <div class="footer-links">
+        <a href="#games">Games</a>
+        <a href="#studio">Studio</a>
+        <a href="#technology">Technology</a>
+        <a href="assets.html">Downloads</a>
+        <a href="#contact">Contact</a>
+      </div>
+      <div class="social-links">
+        <a href="https://github.com/POTA02" class="social-link" title="GitHub" target="_blank" rel="noopener">💻</a>
+        <a href="https://twitter.com" class="social-link" title="Twitter" target="_blank" rel="noopener">🐦</a>
+        <a href="https://discord.com" class="social-link" title="Discord" target="_blank" rel="noopener">💬</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2025 POTA02. All rights reserved.</p>
+      <div>
+        <a href="#contact">Privacy Policy</a> · <a href="#contact">Terms of Service</a>
+      </div>
+    </div>
+  </footer>
 
   <script>
+    // Mobile Navigation Toggle
+    const navToggle = document.getElementById('navToggle');
+    const navLinks = document.getElementById('navLinks');
+
+    navToggle.addEventListener('click', () => {
+      navLinks.classList.toggle('active');
+    });
+
+    // Close mobile nav when clicking a link
+    navLinks.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        navLinks.classList.remove('active');
+      });
+    });
+
     // Scroll Animation - Intersection Observer
     const observerOptions = {
-      threshold: 0.2,
-      rootMargin: '0px 0px -100px 0px'
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px'
     };
 
     const observer = new IntersectionObserver((entries) => {
@@ -438,33 +1126,31 @@
       });
     }, observerOptions);
 
-    // Observe all scroll sections
-    document.querySelectorAll('.scroll-section').forEach(section => {
-      observer.observe(section);
+    document.querySelectorAll('.fade-in').forEach(el => {
+      observer.observe(el);
     });
 
-    // Fade out studio text on scroll
-    const studioText = document.getElementById('studioText');
-    
+    // Smooth scroll for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+          });
+        }
+      });
+    });
+
+    // Parallax effect for orbs
     window.addEventListener('scroll', () => {
-      const scrollPosition = window.pageYOffset;
-      const windowHeight = window.innerHeight;
-      
-      // Start fading after scrolling 30% of viewport, fully fade by 60%
-      const fadeStart = windowHeight * 0.3;
-      const fadeEnd = windowHeight * 0.6;
-      
-      if (scrollPosition < fadeStart) {
-        studioText.style.opacity = '0.9';
-        studioText.style.transform = 'translateY(0)';
-      } else if (scrollPosition >= fadeStart && scrollPosition <= fadeEnd) {
-        const fadeProgress = (scrollPosition - fadeStart) / (fadeEnd - fadeStart);
-        studioText.style.opacity = 0.9 - (fadeProgress * 0.9);
-        studioText.style.transform = `translateY(-${fadeProgress * 30}px)`;
-      } else {
-        studioText.style.opacity = '0';
-        studioText.style.transform = 'translateY(-30px)';
-      }
+      const scrolled = window.pageYOffset;
+      document.querySelectorAll('.orb').forEach((orb, index) => {
+        const speed = 0.05 * (index + 1);
+        orb.style.transform = `translateY(${scrolled * speed}px)`;
+      });
     });
   </script>
 </body>

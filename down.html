@@ -3,9 +3,24 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Downloading PRONOTE...</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <meta name="description" content="Download PRONOTE - LAN Chat Application">
+  <title>Downloading PRONOTE — POTA02</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
   <style>
+    :root {
+      --bg-dark: #0a0a0f;
+      --bg-purple: #0d0a1a;
+      --accent-purple: #8b5cf6;
+      --accent-pink: #d946ef;
+      --accent-blue: #06b6d4;
+      --text-primary: #ffffff;
+      --text-secondary: rgba(255, 255, 255, 0.7);
+      --text-muted: rgba(255, 255, 255, 0.5);
+      --glass: rgba(255, 255, 255, 0.03);
+      --glass-border: rgba(255, 255, 255, 0.08);
+      --glow-purple: rgba(139, 92, 246, 0.4);
+    }
+
     * {
       margin: 0;
       padding: 0;
@@ -13,133 +28,321 @@
     }
 
     body {
-      font-family: 'Poppins', sans-serif;
-      background: linear-gradient(180deg, #001a33 0%, #003d66 50%, #0066a8 100%);
-      background-attachment: fixed;
+      font-family: 'Inter', sans-serif;
+      background: var(--bg-dark);
+      color: var(--text-primary);
       min-height: 100vh;
-      color: #ffffff;
       display: flex;
       justify-content: center;
       align-items: center;
-      text-align: center;
       padding: 2rem;
+      overflow: hidden;
     }
 
-    .download-container {
-      max-width: 500px;
+    /* Background Animation */
+    .bg-animation {
+      position: fixed;
+      top: 0;
+      left: 0;
       width: 100%;
-      background: rgba(255, 255, 255, 0.05);
+      height: 100%;
+      z-index: -1;
+      overflow: hidden;
+    }
+
+    .bg-gradient {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(ellipse at 30% 30%, rgba(139, 92, 246, 0.15) 0%, transparent 50%),
+                  radial-gradient(ellipse at 70% 70%, rgba(217, 70, 239, 0.1) 0%, transparent 50%),
+                  linear-gradient(180deg, var(--bg-dark) 0%, var(--bg-purple) 50%, var(--bg-dark) 100%);
+    }
+
+    .orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      animation: float 20s infinite ease-in-out;
+    }
+
+    .orb-1 {
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, rgba(139, 92, 246, 0.25) 0%, transparent 70%);
+      top: -150px;
+      left: -150px;
+    }
+
+    .orb-2 {
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(217, 70, 239, 0.2) 0%, transparent 70%);
+      bottom: -100px;
+      right: -100px;
+      animation-delay: -10s;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      50% { transform: translate(30px, -30px) scale(1.05); }
+    }
+
+    /* Download Card */
+    .download-card {
+      max-width: 480px;
+      width: 100%;
+      background: var(--glass);
       backdrop-filter: blur(20px);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 20px;
-      padding: 4rem 3rem;
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      border: 1px solid var(--glass-border);
+      border-radius: 24px;
+      padding: 3.5rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 25px 80px rgba(0, 0, 0, 0.5);
+    }
+
+    .download-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--accent-purple), var(--accent-pink), var(--accent-blue));
+    }
+
+    .logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      margin-bottom: 2rem;
+      color: var(--text-muted);
     }
 
     h1 {
-      font-size: 1.8rem;
-      margin-bottom: 1rem;
-      color: #ffffff;
-      font-weight: 600;
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      font-weight: 500;
+      margin-bottom: 0.75rem;
       letter-spacing: -0.02em;
     }
 
-    .countdown {
-      font-size: 6rem;
-      font-weight: 600;
-      margin: 2.5rem 0;
-      color: #ffffff;
-      letter-spacing: -0.05em;
+    .subtitle {
+      font-size: 1rem;
+      color: var(--text-secondary);
+      margin-bottom: 3rem;
     }
 
-    .message {
-      font-size: 1rem;
-      margin-bottom: 3rem;
-      color: rgba(255, 255, 255, 0.7);
-      font-weight: 400;
+    .countdown {
+      font-family: 'Playfair Display', serif;
+      font-size: 7rem;
+      font-weight: 500;
+      line-height: 1;
+      margin: 2rem 0;
+      background: linear-gradient(135deg, var(--accent-purple) 0%, var(--accent-pink) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .countdown.done {
+      font-size: 2rem;
+      background: linear-gradient(135deg, #10b981 0%, #34d399 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+    }
+
+    .progress-wrapper {
+      margin: 2.5rem 0;
     }
 
     .progress-container {
       width: 100%;
-      height: 8px;
+      height: 6px;
       background: rgba(255, 255, 255, 0.1);
       border-radius: 10px;
       overflow: hidden;
-      margin: 3rem 0 1rem 0;
     }
 
     .progress-bar {
       height: 100%;
       width: 0%;
-      background: #0078d4;
+      background: linear-gradient(90deg, var(--accent-purple), var(--accent-pink));
       border-radius: 10px;
       transition: width 0.1s linear;
-      box-shadow: 0 0 10px rgba(0, 120, 212, 0.5);
+      box-shadow: 0 0 20px var(--glow-purple);
     }
 
-    .percentage {
-      font-size: 0.9rem;
-      margin-top: 0.75rem;
-      color: rgba(255, 255, 255, 0.6);
-      font-weight: 400;
+    .progress-text {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 1rem;
+      font-size: 0.85rem;
+      color: var(--text-muted);
     }
 
-    .back-link {
+    .file-info {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      margin-top: 2rem;
+      padding: 1rem;
+      background: rgba(139, 92, 246, 0.1);
+      border: 1px solid rgba(139, 92, 246, 0.2);
+      border-radius: 12px;
+    }
+
+    .file-icon {
+      font-size: 2rem;
+    }
+
+    .file-details {
+      text-align: left;
+    }
+
+    .file-name {
+      font-weight: 500;
+      font-size: 0.95rem;
+    }
+
+    .file-size {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .actions {
       margin-top: 2.5rem;
-      display: inline-block;
-      padding: 0.75rem 2rem;
-      color: #ffffff;
-      text-decoration: none;
-      background: rgba(255, 255, 255, 0.1);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      border-radius: 8px;
-      transition: all 0.3s ease;
-      opacity: 0;
-      visibility: hidden;
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 0.9rem 2rem;
       font-size: 0.95rem;
       font-weight: 500;
+      border-radius: 10px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
     }
 
-    .back-link.show {
+    .btn-primary {
+      background: var(--accent-purple);
+      color: var(--text-primary);
+      border: none;
+      box-shadow: 0 4px 20px var(--glow-purple);
+      opacity: 0;
+      visibility: hidden;
+    }
+
+    .btn-primary.show {
       opacity: 1;
       visibility: visible;
     }
 
-    .back-link:hover {
-      background: rgba(255, 255, 255, 0.15);
-      border-color: rgba(255, 255, 255, 0.3);
-      transform: translateY(-1px);
+    .btn-primary:hover {
+      background: #9d6eff;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 30px var(--glow-purple);
     }
 
-    @media (max-width: 768px) {
+    .btn-secondary {
+      background: var(--glass);
+      color: var(--text-secondary);
+      border: 1px solid var(--glass-border);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text-primary);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .status-message {
+      margin-top: 1.5rem;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .status-message.show {
+      opacity: 1;
+    }
+
+    @media (max-width: 540px) {
+      .download-card {
+        padding: 2.5rem 1.5rem;
+      }
+
       h1 {
-        font-size: 2rem;
+        font-size: 1.5rem;
       }
 
       .countdown {
-        font-size: 3.5rem;
+        font-size: 5rem;
       }
 
-      .message {
-        font-size: 1.2rem;
+      .actions {
+        flex-direction: column;
       }
 
-      .percentage {
-        font-size: 1.5rem;
+      .btn {
+        width: 100%;
+        justify-content: center;
       }
     }
   </style>
 </head>
 <body>
-  <div class="download-container">
-    <h1>Preparing Your Download</h1>
-    <p class="message">PRONOTE v1.5.2 will download shortly...</p>
+  <!-- Background Animation -->
+  <div class="bg-animation">
+    <div class="bg-gradient"></div>
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+  </div>
+
+  <!-- Download Card -->
+  <div class="download-card">
+    <div class="logo">POTA02</div>
+    <h1>Preparing Download</h1>
+    <p class="subtitle">Your download will begin automatically</p>
+    
     <div class="countdown" id="countdown">5</div>
-    <div class="progress-container">
-      <div class="progress-bar" id="progressBar"></div>
+    
+    <div class="progress-wrapper">
+      <div class="progress-container">
+        <div class="progress-bar" id="progressBar"></div>
+      </div>
+      <div class="progress-text">
+        <span id="statusText">Initializing...</span>
+        <span id="percentage">0%</span>
+      </div>
     </div>
-    <div class="percentage" id="percentage">0%</div>
-    <a href="index.html" class="back-link" id="backLink">Back to Home</a>
+
+    <div class="file-info">
+      <div class="file-icon">📦</div>
+      <div class="file-details">
+        <div class="file-name">PRONOTE Setup 1.5.3.exe</div>
+        <div class="file-size">Windows Installer</div>
+      </div>
+    </div>
+
+    <div class="actions">
+      <a href="index.html" class="btn btn-secondary">← Back to Home</a>
+      <a href="assets/PRONOTE Setup 1.5.3.exe" class="btn btn-primary" id="manualDownload" download>Download Now</a>
+    </div>
+
+    <p class="status-message" id="statusMessage">If download doesn't start, click "Download Now"</p>
   </div>
 
   <script>
@@ -148,17 +351,30 @@
     const countdownElement = document.getElementById('countdown');
     const progressBar = document.getElementById('progressBar');
     const percentageElement = document.getElementById('percentage');
-    const backLink = document.getElementById('backLink');
+    const statusText = document.getElementById('statusText');
+    const manualDownload = document.getElementById('manualDownload');
+    const statusMessage = document.getElementById('statusMessage');
 
     // Update progress bar smoothly
     const progressInterval = setInterval(() => {
-      progress += 0.4; // 100% in 5 seconds (0.4% per 20ms)
+      progress += 0.4;
       if (progress >= 100) {
         progress = 100;
         clearInterval(progressInterval);
       }
       progressBar.style.width = progress + '%';
       percentageElement.textContent = Math.floor(progress) + '%';
+      
+      // Update status text
+      if (progress < 30) {
+        statusText.textContent = 'Initializing...';
+      } else if (progress < 60) {
+        statusText.textContent = 'Preparing files...';
+      } else if (progress < 90) {
+        statusText.textContent = 'Almost ready...';
+      } else {
+        statusText.textContent = 'Starting download...';
+      }
     }, 20);
 
     // Update countdown
@@ -168,20 +384,22 @@
       
       if (countdown <= 0) {
         clearInterval(countdownInterval);
-        countdownElement.textContent = 'Downloading...';
+        countdownElement.textContent = '✓';
+        countdownElement.classList.add('done');
         
         // Trigger download
         const link = document.createElement('a');
-        link.href = 'assets/PRONOTE 1.5.2.exe';
-        link.download = 'PRONOTE 1.5.2.exe';
+        link.href = 'assets/PRONOTE Setup 1.5.3.exe';
+        link.download = 'PRONOTE Setup 1.5.3.exe';
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
         
-        // Show completion message after a brief delay
+        // Show manual download button and status message
         setTimeout(() => {
-          countdownElement.textContent = 'Done!';
-          backLink.classList.add('show');
+          manualDownload.classList.add('show');
+          statusMessage.classList.add('show');
+          statusText.textContent = 'Download started!';
         }, 500);
       }
     }, 1000);
