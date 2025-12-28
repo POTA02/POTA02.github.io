@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Download Monster Defense - Tower Defense Game">
+  <title>Download Monster Defense — POTA02</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-dark: #0a0a0f;
+      --bg-purple: #0d0a1a;
+      --accent-purple: #8b5cf6;
+      --accent-pink: #d946ef;
+      --accent-blue: #06b6d4;
+      --accent-green: #10b981;
+      --text-primary: #ffffff;
+      --text-secondary: rgba(255, 255, 255, 0.7);
+      --text-muted: rgba(255, 255, 255, 0.5);
+      --glass: rgba(255, 255, 255, 0.03);
+      --glass-border: rgba(255, 255, 255, 0.08);
+      --glow-purple: rgba(139, 92, 246, 0.4);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg-dark);
+      color: var(--text-primary);
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+
+    /* Background Animation */
+    .bg-animation {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      overflow: hidden;
+    }
+
+    .bg-gradient {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(ellipse at 20% 20%, rgba(139, 92, 246, 0.12) 0%, transparent 50%),
+                  radial-gradient(ellipse at 80% 80%, rgba(217, 70, 239, 0.08) 0%, transparent 50%),
+                  linear-gradient(180deg, var(--bg-dark) 0%, var(--bg-purple) 50%, var(--bg-dark) 100%);
+    }
+
+    .orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      animation: float 25s infinite ease-in-out;
+    }
+
+    .orb-1 {
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, rgba(139, 92, 246, 0.2) 0%, transparent 70%);
+      top: -200px;
+      right: -100px;
+    }
+
+    .orb-2 {
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(217, 70, 239, 0.15) 0%, transparent 70%);
+      bottom: -100px;
+      left: -100px;
+      animation-delay: -12s;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      50% { transform: translate(20px, -20px) scale(1.03); }
+    }
+
+    /* Navigation */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      padding: 1.5rem 4rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: linear-gradient(180deg, rgba(10, 10, 15, 0.95) 0%, transparent 100%);
+      backdrop-filter: blur(10px);
+    }
+
+    .nav-logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      text-decoration: none;
+      letter-spacing: 0.1em;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+    }
+
+    .nav-links a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 0.95rem;
+      transition: color 0.3s ease;
+    }
+
+    .nav-links a:hover {
+      color: var(--text-primary);
+    }
+
+    /* Container */
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 8rem 2rem 4rem;
+    }
+
+    /* Header */
+    .page-header {
+      text-align: center;
+      margin-bottom: 4rem;
+    }
+
+    .page-label {
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.3em;
+      color: var(--accent-purple);
+      margin-bottom: 1rem;
+      font-weight: 500;
+    }
+
+    .page-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.5rem, 5vw, 4rem);
+      font-weight: 500;
+      margin-bottom: 1rem;
+      letter-spacing: -0.02em;
+    }
+
+    .page-subtitle {
+      font-size: 1.15rem;
+      color: var(--text-secondary);
+      max-width: 600px;
+      margin: 0 auto;
+      line-height: 1.7;
+    }
+
+    /* Download Options */
+    .download-options {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      margin-bottom: 3rem;
+    }
+
+    .download-card {
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      padding: 2rem;
+      transition: all 0.4s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .download-card.featured {
+      background: linear-gradient(135deg, rgba(139, 92, 246, 0.15) 0%, rgba(217, 70, 239, 0.1) 100%);
+      border: 1px solid rgba(139, 92, 246, 0.3);
+    }
+
+    .download-card.featured::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--accent-purple), var(--accent-pink));
+    }
+
+    .featured-badge {
+      position: absolute;
+      top: 1.5rem;
+      right: 1.5rem;
+      padding: 0.4rem 1rem;
+      background: var(--accent-purple);
+      border-radius: 50px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    .download-card:hover {
+      transform: translateY(-5px);
+      border-color: rgba(139, 92, 246, 0.3);
+      box-shadow: 0 15px 50px rgba(139, 92, 246, 0.15);
+    }
+
+    .download-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .download-icon {
+      width: 64px;
+      height: 64px;
+      background: linear-gradient(135deg, rgba(139, 92, 246, 0.2) 0%, rgba(217, 70, 239, 0.1) 100%);
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      flex-shrink: 0;
+    }
+
+    .download-info {
+      flex: 1;
+    }
+
+    .download-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem;
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+    }
+
+    .download-version {
+      display: inline-block;
+      padding: 0.3rem 0.8rem;
+      background: rgba(16, 185, 129, 0.2);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      border-radius: 50px;
+      font-size: 0.8rem;
+      color: var(--accent-green);
+      margin-bottom: 0.75rem;
+    }
+
+    .download-description {
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+      line-height: 1.7;
+      margin-bottom: 1.5rem;
+    }
+
+    .download-meta {
+      display: flex;
+      gap: 2rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.5rem;
+    }
+
+    .meta-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    .download-action {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+    }
+
+    .btn-download {
+      padding: 0.9rem 2.5rem;
+      background: var(--accent-purple);
+      color: var(--text-primary);
+      border: none;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 8px 30px var(--glow-purple);
+    }
+
+    .btn-download:hover {
+      background: #9d6eff;
+      transform: translateY(-3px);
+      box-shadow: 0 12px 40px var(--glow-purple);
+    }
+
+    .btn-secondary {
+      padding: 0.9rem 2rem;
+      background: var(--glass);
+      color: var(--text-secondary);
+      border: 1px solid var(--glass-border);
+      border-radius: 10px;
+      font-size: 0.95rem;
+      font-weight: 500;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all 0.3s ease;
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text-primary);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    /* Game Info */
+    .game-info {
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+    }
+
+    .info-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.25rem;
+      font-weight: 500;
+      margin-bottom: 1rem;
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .info-item {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+
+    .info-label {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    .info-value {
+      font-size: 1rem;
+      color: var(--text-primary);
+      font-weight: 500;
+    }
+
+    /* Hidden Download */
+    .hidden-download {
+      text-align: center;
+      margin-top: 3rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--glass-border);
+    }
+
+    .hidden-link {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-decoration: none;
+      opacity: 0.3;
+      transition: opacity 0.3s ease;
+    }
+
+    .hidden-link:hover {
+      opacity: 0.8;
+      text-decoration: underline;
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 2rem;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    footer a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+
+    footer a:hover {
+      color: var(--text-primary);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      nav {
+        padding: 1rem 2rem;
+      }
+
+      .container {
+        padding: 7rem 1rem 3rem;
+      }
+
+      .nav-links {
+        display: none;
+      }
+
+      .download-header {
+        flex-direction: column;
+      }
+
+      .download-action {
+        flex-direction: column;
+        width: 100%;
+      }
+
+      .btn-download,
+      .btn-secondary {
+        width: 100%;
+        justify-content: center;
+      }
+
+      .info-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Fade in animation */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(30px);
+      animation: fadeInUp 0.6s ease forwards;
+    }
+
+    .fade-in:nth-child(1) { animation-delay: 0.1s; }
+    .fade-in:nth-child(2) { animation-delay: 0.2s; }
+    .fade-in:nth-child(3) { animation-delay: 0.3s; }
+    .fade-in:nth-child(4) { animation-delay: 0.4s; }
+
+    @keyframes fadeInUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Background Animation -->
+  <div class="bg-animation">
+    <div class="bg-gradient"></div>
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+  </div>
+
+  <!-- Navigation -->
+  <nav>
+    <a href="index.html" class="nav-logo">POTA02</a>
+    <div class="nav-links">
+      <a href="index.html#games">Games</a>
+      <a href="assets.html">Downloads</a>
+      <a href="index.html#contact">Contact</a>
+    </div>
+  </nav>
+
+  <div class="container">
+    <!-- Header -->
+    <header class="page-header fade-in">
+      <p class="page-label">Download</p>
+      <h1 class="page-title">Monster Defense</h1>
+      <p class="page-subtitle">A strategic tower defense game where you protect your base from waves of monsters. Build defenses, upgrade towers, and survive the onslaught.</p>
+    </header>
+
+    <!-- Game Info -->
+    <div class="game-info fade-in">
+      <h2 class="info-title">Game Information</h2>
+      <div class="info-grid">
+        <div class="info-item">
+          <span class="info-label">Version</span>
+          <span class="info-value">1.0.0</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Genre</span>
+          <span class="info-value">Tower Defense</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Platform</span>
+          <span class="info-value">Windows x64</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Release Date</span>
+          <span class="info-value">December 2025</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Download Options -->
+    <div class="download-options">
+      <!-- Main Installer -->
+      <div class="download-card featured fade-in">
+        <span class="featured-badge">Recommended</span>
+        <div class="download-header">
+          <div class="download-icon">📦</div>
+          <div class="download-info">
+            <h2 class="download-title">Full Installer</h2>
+            <span class="download-version">v1.0.0</span>
+            <p class="download-description">Complete installation package with setup wizard. Includes all game files and automatic configuration. Best for most users.</p>
+            <div class="download-meta">
+              <span class="meta-item">💻 Windows Installer</span>
+              <span class="meta-item">🔧 Auto Setup</span>
+              <span class="meta-item">✨ Easy Install</span>
+            </div>
+          </div>
+        </div>
+        <div class="download-action">
+          <a href="https://github.com/POTA02/POTA02.github.io/releases/tag/v1.0.0" class="btn-download" target="_blank" rel="noopener noreferrer">
+            <span>Download Installer</span>
+            <span>↓</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Standalone Game -->
+      <div class="download-card fade-in">
+        <div class="download-header">
+          <div class="download-icon">🎮</div>
+          <div class="download-info">
+            <h2 class="download-title">Standalone Game</h2>
+            <span class="download-version">v1.0.0</span>
+            <p class="download-description">Portable executable file. No installation required, just download and play. Perfect for USB drives or quick testing.</p>
+            <div class="download-meta">
+              <span class="meta-item">💻 Windows</span>
+              <span class="meta-item">📦 Portable</span>
+              <span class="meta-item">⚡ No Install</span>
+            </div>
+          </div>
+        </div>
+        <div class="download-action">
+          <a href="https://github.com/POTA02/POTA02.github.io/releases/tag/v1.0.0" class="btn-secondary" target="_blank" rel="noopener noreferrer">
+            <span>Download Portable</span>
+            <span>↓</span>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Hidden Developer Download -->
+    <div class="hidden-download fade-in">
+      <a href="https://github.com/POTA02/POTA02.github.io/releases/tag/v1.0.0" class="hidden-link" target="_blank" rel="noopener noreferrer">Developer Build (win32-x64)</a>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <p>&copy; 2025 POTA02. All rights reserved. <a href="index.html">Back to Home</a> · <a href="assets.html">All Downloads</a></p>
+  </footer>
+</body>
+</html>
